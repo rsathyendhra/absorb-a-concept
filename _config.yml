@@ -8,13 +8,6 @@ description: feed thy curiosity
 google_analytics:
 theme: minima
 
-plugins:
-  - jekyll-feed
-  - jekyll-seo-tag
-
-sass:
-  quiet_deps: true
-  silence_deprecations: [import]
 
 minima:
   # Minima skin selection. Available skins are:
@@ -39,5 +32,6 @@ social_links:
     - title: Linkedin
       icon: linkedin
       url: "https://www.linkedin.com/in/sathyendhranath-r-081b7032/" 
+
 
 
