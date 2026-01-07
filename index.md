@@ -1,7 +1,3 @@
----
-title: Absorb a Concept
----
-
 {% for post in site.posts %}
   <article>
     <h2>
