@@ -1,6 +1,43 @@
 title: Absorb a Concept
-logo: /assets/img/logo.png
+author:
+  name:rsathyendhra
+  email:rsathyendhra@outlook.com
+  
 description: feed thy curiosity
-show_downloads: true
+
 google_analytics:
-theme: jekyll-theme-minimal
+theme: minima
+
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+sass:
+  quiet_deps: true
+  silence_deprecations: [import]
+
+minima:
+  # Minima skin selection. Available skins are:
+  #   Available skins:
+  #     * classic            Default, light color scheme.
+  #     * dark               Dark variant of the classic skin.
+  #     * auto               Adaptive skin based on the default classic and dark skins.
+  #     * solarized-light    Light variant of solarized color scheme.
+  #     * solarized-dark     Dark variant of solarized color scheme.
+  #     * solarized          Adaptive skin for solarized color scheme skins.
+  skin: solarized-light
+
+nav_pages:
+  - about.md
+  
+show_excerpts: false
+
+social_links:
+    - title: Minima Theme repository at GitHub
+      icon: github
+      url: "https://github.com/rsathyendhra/absorb-a-concept"
+    - title: Linkedin
+      icon: linkedin
+      url: "https://www.linkedin.com/in/sathyendhranath-r-081b7032/" 
+
+
