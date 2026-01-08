@@ -15,38 +15,41 @@ The content is divided into 4 parts,
 * How to get started with Kubernetes?
 
 # History
-Before directly jumping into getting to knowing kubernetes, it is best to understand the evolution of deployments in the software industry. Software deployment is simply a way of running applications, traditionally they were run on physical servers. There were limitations in running application in physical servers which led to the inception of a concept called "Virtualization".\
+Before directly jumping into getting to knowing kubernetes, it is best to understand the evolution of deployments in the software industry. Software deployment is simply a way of running applications, traditionally they were run on physical servers. There were limitations in running application in physical servers which led to the inception of a concept called "Virtualization".
 
-## What are the limitations/drawbacks of running application on physical servers?\
+## What are the limitations/drawbacks of running application on physical servers?
 One major disadvantage is the lack of ability of sharing resources among different processes easily. Cost also plays an important role, a physical server is pricey to maintain(inclusive of real estate and infra for cooling). Scaling up is not easy and time consuming.
 
-## What is virtualization?\
+## What is virtualization?
 In simple terms it is a software which allows to deploy(create) multiple machines using resources of an underlying physical hardware(host).
 
 Virtualization made software or app developments convenient but to further simplify software deployments the concept of container deployments came into existence. 
 
-## What is container?\
+## What is container?
 An application and its dependencies packaged into one portable unit which is also light weight is referred to as a container.
 
 With the high rate of adoption of container deployments gave rise to widespread use of "kubernetes". So simply put without containers, kubernetes would not exist. 
 
 Now with the above concepts in mind, let us proceed to address the main topic i.e.,\
 
-# What is Kubernetes?\
+# What is Kubernetes?
 Kubernetes is an orchestrator which intelligently helps in managing multiple container applications spanning across many hosts.
 
-# Why Kubernetes?\
+# Why Kubernetes?
 The main purpose of container is optimum resource utilization, kubernetes with its intelligence and orchestration help to achieve this across multiple hosts, thereby helping to unlock the purpose and potential of containerized applications.
 
 # Kubernetes vs docker
-![docker vs kubernetes]("/assets/images/dockervskubernetes.png")
+![docker vs kubernetes](/assets/images/dockervskubernetes.png)
+
 Docker is a containerization platform which helps in building, implementing and running containerized applications limited to one docker instance per host os  whereas Kubernetes is much more, it is a platform for running and managing containers from many container runtimes and operates on a cluster level on many hosts. Docker is one of the many runtimes kubernetes supports.
 
 # How to get started with kubernetes?
 ## Steps for mac
 
 Install kubectl 
-```curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/darwin/amd64/kubectl"```
+```
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/darwin/amd64/kubectl"
+```
 
 Check Installation
 ```
