@@ -29,15 +29,16 @@ show_excerpts: false
 #     RSS / Atom feed link is always rendered as the last item of social-links
 #     list. Set below key to `true` to not have the link to feed rendered as
 #     part of social-links list.
-hide_site_feed_link: false
+#hide_site_feed_link: false
 
-social_links:
-    - title: Minima Theme repository at GitHub
-      icon: github
-      url: "https://github.com/rsathyendhra/absorb-a-concept"
-    - title: Linkedin
-      icon: linkedin
-      url: "https://www.linkedin.com/in/sathyendhranath-r-081b7032/" 
+#social_links:
+#    - title: Minima Theme repository at GitHub
+#      icon: github
+#      url: "https://github.com/rsathyendhra/absorb-a-concept"
+#    - title: Linkedin
+#      icon: linkedin
+#      url: "https://www.linkedin.com/in/sathyendhranath-r-081b7032/" 
+
 
 
 
