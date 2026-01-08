@@ -3,7 +3,7 @@ author:
   name:sathyendhra
 # email:rsathyendhra@outlook.com
   
-description: This blog is to feed thy curiosity on concepts mostly technical.This serves as my note taking tool
+description: This blog serves as a single point of reference for the concepts I have explored.The content of concepts is revised as and when I get a better understanding of it.I am hoping it helps the readers.
 
 google_analytics:
 theme: minima
@@ -38,6 +38,7 @@ show_excerpts: false
 #    - title: Linkedin
 #      icon: linkedin
 #      url: "https://www.linkedin.com/in/sathyendhranath-r-081b7032/" 
+
 
 
 
