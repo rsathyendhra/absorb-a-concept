@@ -39,7 +39,8 @@ Kubernetes is an orchestrator which intelligently helps in managing multiple con
 The main purpose of container is optimum resource utilization, kubernetes with its intelligence and orchestration help to achieve this across multiple hosts, thereby helping to unlock the purpose and potential of containerized applications.
 
 # Kubernetes vs docker
-![docker vs kubernetes](/assets/images/dockervskubernetes.png)
+![docker vs kubernetes]({{ "/assets/images/dockervskubernetes.png" | relative_url }})
+
 
 Docker is a containerization platform which helps in building, implementing and running containerized applications limited to one docker instance per host os  whereas Kubernetes is much more, it is a platform for running and managing containers from many container runtimes and operates on a cluster level on many hosts. Docker is one of the many runtimes kubernetes supports.
 
@@ -82,8 +83,7 @@ kubectl cluster-info
 ```
 
 # References
-
-1. https://kubernetes.io/docs/tutorials/kubernetes-basics/
-2.https://portworx.com/blog/kubernetes-vs-virtual-machines/
-3.https://www.atlassian.com/microservices/microservices-architecture/kubernetes-vs-docker#:~:text=Kubernetes%20can%20be%20used%20with,containers%20a%20week%20at%20scale.
-4. https://www.index.dev/blog/kubernetes-vs-docker
+* https://kubernetes.io/docs/tutorials/kubernetes-basics/
+* https://portworx.com/blog/kubernetes-vs-virtual-machines/
+* https://www.atlassian.com/microservices/microservices-architecture/kubernetes-vs-docker#:~:text=Kubernetes%20can%20be%20used%20with,containers%20a%20week%20at%20scale.
+* https://www.index.dev/blog/kubernetes-vs-docker
