@@ -82,6 +82,17 @@ Verify kubectl configuration
 kubectl cluster-info
 ```
 
+Once the setup is complete, cluster-information can be got. Let us understand more about kubernetes cluster in the next section.
+
+# Kubernetes Cluster
+
+Kubernetes cluster is composed of two components,
+* kuernetes nodes
+* kubernetes control plane
+
+
+
+
 # References
 * https://kubernetes.io/docs/tutorials/kubernetes-basics/
 * https://portworx.com/blog/kubernetes-vs-virtual-machines/
