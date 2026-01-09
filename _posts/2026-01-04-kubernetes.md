@@ -90,6 +90,22 @@ Kubernetes cluster is composed of two components,
 * kuernetes nodes
 * kubernetes control plane
 
+Kubernetes node comprises of: 
+* kubelet
+* kubeporxy 
+*container runtime
+
+Kubernete control plane consists of 
+* kubeapi server
+* control manager (including optional cloud control manager)
+* scheduler 
+* etcd
+
+
+
+
+
+
 
 
 
