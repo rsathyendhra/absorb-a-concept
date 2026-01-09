@@ -85,6 +85,8 @@ kubectl cluster-info
 Once the setup is complete, cluster-information can be got. Let us understand more about kubernetes cluster in the next section.
 
 # Kubernetes Cluster
+![kube_cluster]({{ "/assets/images/kube_cluster.png" | relative_url }})
+
 
 Kubernetes cluster is composed of two components,
 * kuernetes nodes
