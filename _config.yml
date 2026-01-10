@@ -21,7 +21,11 @@ minima:
   skin: solarized-light
 
 nav_pages:
+  - technical.md
+  - allvmware.md
   - about.md
+  
+  
   
 show_excerpts: false
 
@@ -38,6 +42,7 @@ show_excerpts: false
 #    - title: Linkedin
 #      icon: linkedin
 #      url: "https://www.linkedin.com/in/sathyendhranath-r-081b7032/" 
+
 
 
 
