@@ -93,15 +93,15 @@ Kubernetes cluster is composed of two components,
 * kubernetes control plane
 
 Kubernetes node comprises of: 
-* kubelet
-* kubeporxy 
-* container runtime
+* kubelet - Responsible for running pods along with their containers using container runtime
+* kubeporxy - Optional component which is used to maintain networking rules on nodes to implement services.
+* container runtime -  container runtime software used by kubelet to run containers.
 
 Kubernete control plane consists of 
-* kubeapi server
-* control manager (including optional cloud control manager)
-* scheduler 
-* etcd
+* kubeapi server - It is the core component that is responsible to expose http API's of kubernetes.
+* control manager (including optional cloud control manager) - It is a controller to implement kubernetes API behavior
+* scheduler - Ensures that all pods are assigned to a suitable node
+* etcd - key value datastore for API server data which is conistant and highly avaialble
 
 
 # References
