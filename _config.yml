@@ -20,15 +20,12 @@ minima:
   #     * solarized          Adaptive skin for solarized color scheme skins.
   skin: solarized-light
 
-#nav_pages:
-#  - about.md
-#  - technical.md
-#  - allvmware.md
-
-header_pages:
-  - technical.md
-  - allvmware.md
+nav_pages:
   - about.md
+  - 01_technical.md
+  - allvmware.md
+
+
  
   
   
@@ -48,6 +45,7 @@ show_excerpts: false
 #    - title: Linkedin
 #      icon: linkedin
 #      url: "https://www.linkedin.com/in/sathyendhranath-r-081b7032/" 
+
 
 
 
