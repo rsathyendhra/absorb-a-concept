@@ -103,7 +103,7 @@ Kubernete control plane consists of
 * scheduler - Ensures that all pods are assigned to a suitable node
 * etcd - key value datastore for API server data which is conistant and highly avaialble
 
-In the next section let us understand about pod in kubernetes and how to create a pod in kubernetes,
+In the next section let us understand about pod in kubernetes and how to create it,
 
 # What is a pod? or What are pods in kubernetes?
 Pod is smallest deployable unit that can be created and managed by kubernetes. It can contain one or more containers. Generally it is one conatiner per pod but depending on the business use case it can accomodate more than one pod.
