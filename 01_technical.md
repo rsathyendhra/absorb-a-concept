@@ -9,9 +9,11 @@ order: 1
   <article>
     <h2>
       <a href="{{ post.url | relative_url }}">
-        {% if post.category == "Technical" %}
-          {{ post.title }}
-        {% endif %}
+    {% if post.categories contains "Technical" %}
+      <li>
+        <a href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
+      </li>
+    {% endif %}
       </a>
     </h2>
     <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date_to_long_string }}</time>
