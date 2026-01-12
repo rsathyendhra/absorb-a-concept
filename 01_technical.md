@@ -9,9 +9,9 @@ order: 1
   <article>
     <h2>
        <a> 
-          {% if post.categories contains "Technical" %}
+          {% if post.category contains "Technical" %}
             <li>
-              <a href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
+              <a href="{{ post.url | relative_url }}">Read more...</a>
             </li>
           {% endif %}
        </a>
