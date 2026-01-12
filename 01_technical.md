@@ -11,6 +11,7 @@ order: 1
       <a href="{{ post.url | relative_url }}">
         {% if post.category == "Technical" %}
           {{ post.title }}
+        {% endif %}
       </a>
     </h2>
     <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date_to_long_string }}</time>
