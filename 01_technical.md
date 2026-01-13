@@ -5,7 +5,7 @@ permalink: /technical/
 order: 1
 ---
 
-
+<!--
   <article>
     <h2>
   
@@ -21,5 +21,5 @@ order: 1
      
     </h2>
     
-  </article>
+  </article> -->
 
