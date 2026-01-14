@@ -4,8 +4,9 @@ title: Technical
 permalink: /technical/
 ---
   {% for post in site.posts %}
-  <article>
+  
     {% if post.category contains "Technical" %}
+    <article>
      <h2>
       <a href="{{ post.url | relative_url }}">
         {{ post.title }}
@@ -16,7 +17,7 @@ permalink: /technical/
     {{ post.excerpt | strip_html_newlines }}
 
     <a href="{{ post.url | relative_url }}">Read more...</a>
-
+    </article>  
     {% endif %}
-  </article>  
+  
   {% endfor %}
