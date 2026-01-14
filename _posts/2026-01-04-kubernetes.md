@@ -107,8 +107,26 @@ Kubernete control plane consists of
 In the next section let us understand about pod in kubernetes and how to create it,
 
 # What is a pod? or What are pods in kubernetes?
-Pod is smallest deployable unit that can be created and managed by kubernetes. It can contain one or more containers. Generally it is one conatiner per pod but depending on the business use case it can accomodate more than one pod.
+Pod is smallest deployable unit that can be created and managed by kubernetes. It can contain one or more containers. Generally it is one conatiner per pod but depending on the business use case it can accomodate more than one container.
 
+##How to deploy a sample pod?
+Below is a sample yaml file that deploys a pod running nginx conatiner with image nginx:1.14.2
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.14.2
+    ports:
+    - containerPort: 80
+```
+Save the above file as nginx.yaml and run the below command:
+```
+kubectl apply -f nginx.yaml -n <namespace_name>
+```
 # References
 * https://kubernetes.io/docs/tutorials/kubernetes-basics/
 * https://portworx.com/blog/kubernetes-vs-virtual-machines/
