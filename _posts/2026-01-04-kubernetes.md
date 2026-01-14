@@ -109,7 +109,7 @@ In the next section let us understand about pod in kubernetes and how to create 
 # What is a pod? or What are pods in kubernetes?
 Pod is smallest deployable unit that can be created and managed by kubernetes. It can contain one or more containers. Generally it is one conatiner per pod but depending on the business use case it can accomodate more than one container.
 
-##How to deploy a sample pod?
+## How to deploy a sample pod?
 Below is a sample yaml file that deploys a pod running nginx conatiner with image nginx:1.14.2
 ```
 apiVersion: v1
