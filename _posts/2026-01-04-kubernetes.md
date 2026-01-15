@@ -127,6 +127,19 @@ Save the above file as nginx.yaml and run the below command:
 ```
 kubectl apply -f nginx.yaml -n <namespace_name>
 ```
+## Lifecycle of a pod
+
+
+
+# Workload resources supported in kubernetes
+In practice, individual pods are not deployed, they get deployed as part of deploying workload resources. 
+Kinds of deployments supported by kubernetes
+1) Pod
+2) Job
+3) StatefulSets
+4) DaemomSet
+
+
 # References
 * https://kubernetes.io/docs/tutorials/kubernetes-basics/
 * https://portworx.com/blog/kubernetes-vs-virtual-machines/
