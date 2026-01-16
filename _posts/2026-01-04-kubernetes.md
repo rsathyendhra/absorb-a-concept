@@ -129,16 +129,24 @@ kubectl apply -f nginx.yaml -n <namespace_name>
 ```
 ## Lifecycle of a pod
 
+Pods lifecycle starts with a "pending" phase, followed by "running" when atleast one of the containers starts and then moves to "succeeded" if everything goes fine or to  a "failed" phase if one of the container terminated with failure.
 
+In real world, individual pods are generally not deployed, they get deployed using workload resources. Let us understand a little bit about workload resources in kubernetes.
 
 # Workload resources supported in kubernetes
-In practice, individual pods are not deployed, they get deployed as part of deploying workload resources. 
-Kinds of deployments supported by kubernetes
-1) Pod
-2) Job
-3) StatefulSets
-4) DaemomSet
+Workload resources can be described as API objects that manage and run applications/services on the cluster by ensuring the correct pods are running to match a specified desired state.
 
+Type of workloads supported by kubernetes
+
+1) Deployments - It manages a set of pods to run an application which does not maintain state
+2) StatefulSets - It runs a group of pods to run an application which maintains state. For e.g., application requires persistant storage or stable network identity
+3) DaemomSet - It ensures that all nodes have a copy of pod. For e.g., a copy of logs collection running on each node
+
+Other workload types are replicaset,job,cronjob and replicationController.
+
+# Conclusion
+
+In this post we have just scratched the surface in trying to understand the concept of kubernetes. With grasp of the above, one can embark on the journey of exploring  deeper the wonderful technology of kubernetes.
 
 # References
 * https://kubernetes.io/docs/tutorials/kubernetes-basics/
