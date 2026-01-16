@@ -133,6 +133,9 @@ Pods lifecycle starts with a "pending" phase, followed by "running" when atleast
 
 In real world, individual pods are generally not deployed, they get deployed using workload resources. Let us understand a little bit about workload resources in kubernetes.
 
+## Pods are ephemeral
+In kubernetes pods are ephemeral meaning that they can be terminated and redeployed by the nodes and are stateless. If a pod needs its identity and data to be non-ephemeral that can be achieved by making it persistent using statefulsets (a type of workload resource in kubernetes) which briefly described in the next section.
+
 # Workload resources supported in kubernetes
 Workload resources can be described as API objects that manage and run applications/services on the cluster by ensuring the correct pods are running to match a specified desired state.
 
