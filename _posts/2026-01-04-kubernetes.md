@@ -146,7 +146,7 @@ Other workload types are replicaset,job,cronjob and replicationController.
 
 # Conclusion
 
-In this post we have just scratched the surface in trying to understand the concept of kubernetes. With grasp of the above, one can embark on the journey of exploring  deeper the wonderful technology of kubernetes.
+In this post we have just scratched the surface in trying to understand the concept of kubernetes. With grasp of the above, one can embark on the journey of exploring  deeper into the world of kubernetes.
 
 # References
 * https://kubernetes.io/docs/tutorials/kubernetes-basics/
