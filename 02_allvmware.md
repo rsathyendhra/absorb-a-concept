@@ -1,7 +1,7 @@
----
-layout: page
-title: All VMware
-permalink: /allvmware/
----
+#---
+#layout: page
+#title: All VMware
+#permalink: /allvmware/
+#---
 
-VMware related pages
+#VMware related pages
