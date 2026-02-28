@@ -29,7 +29,7 @@ Virtualization made software or app developments convenient but to further simpl
 ## What is container?
 An application and its dependencies packaged into one portable unit which is also light weight is referred to as a container.
 
-With the high rate of adoption of container deployments gave rise to widespread use of "kubernetes". So simply put without containers, kubernetes would not exist. 
+he high rate of adoption of container deployments gave rise to widespread use of "kubernetes". So simply put without containers, kubernetes would not exist. 
 
 Now with the above concepts in mind, let us proceed to address the main topic i.e.,\
 
@@ -90,19 +90,19 @@ Once the setup is complete, cluster-information can be got. Let us understand mo
 
 
 Kubernetes cluster is composed of two components,
-* kuernetes nodes
+* kubernetes nodes
 * kubernetes control plane
 
 Kubernetes node comprises of: 
 * kubelet - Responsible for running pods along with their containers using container runtime
-* kubeporxy - Optional component which is used to maintain networking rules on nodes to implement services.
+* kube-porxy - Optional component which is used to maintain networking rules on nodes to implement services.
 * container runtime -  container runtime software used by kubelet to run containers.
 
 Kubernete control plane consists of 
 * kubeapi server - It is the core component that is responsible to expose http API's of kubernetes.
 * control manager (including optional cloud control manager) - It is a controller to implement kubernetes API behavior
 * scheduler - Ensures that all pods are assigned to a suitable node
-* etcd - key value datastore for API server data which is conistant and highly avaialble
+* etcd - key value datastore for API server data which is conistent and highly avaialble
 
 In the next section let us understand about pod in kubernetes and how to create it,
 
@@ -110,7 +110,7 @@ In the next section let us understand about pod in kubernetes and how to create 
 Pod is smallest deployable unit that can be created and managed by kubernetes. It can contain one or more containers. Generally it is one conatiner per pod but depending on the business use case it can accomodate more than one container.
 
 ## How to deploy a sample pod?
-Below is a sample yaml file that deploys a pod running nginx conatiner with image nginx:1.14.2
+Below is a sample yaml file that deploys a pod running nginx container with image nginx:1.14.2
 ```
 apiVersion: v1
 kind: Pod
@@ -129,7 +129,7 @@ kubectl apply -f nginx.yaml -n <namespace_name>
 ```
 ## Lifecycle of a pod
 
-Pods lifecycle starts with a "pending" phase, followed by "running" when atleast one of the containers starts and then moves to "succeeded" if everything goes fine or to  a "failed" phase if one of the container terminated with failure.
+Pods lifecycle starts with a "pending" phase, followed by "running" when at least one of the containers starts and then moves to "succeeded" if everything goes fine or to  a "failed" phase if one of the container terminated with failure.
 
 In real world, individual pods are generally not deployed, they get deployed using workload resources. Let us understand a little bit about workload resources in kubernetes.
 
@@ -142,8 +142,8 @@ Workload resources can be described as API objects that manage and run applicati
 Type of workloads supported by kubernetes
 
 1) Deployments - It manages a set of pods to run an application which does not maintain state
-2) StatefulSets - It runs a group of pods to run an application which maintains state. For e.g., application requires persistant storage or stable network identity
-3) DaemomSet - It ensures that all nodes have a copy of pod. For e.g., a copy of logs collection running on each node
+2) StatefulSets - It runs a group of pods to run an application which maintains state. For e.g., application requires persistent storage or stable network identity
+3) DaemonSet - It ensures that all nodes have a copy of pod. For e.g., a copy of logs collection running on each node
 
 Other workload types are replicaset,job,cronjob and replicationController.
 
