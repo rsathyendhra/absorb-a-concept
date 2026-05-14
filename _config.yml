@@ -25,7 +25,16 @@ nav_pages:
   - 01_technical.md
   #- 02_allvmware.md
 
-
+defaults:
+     - scope:
+         path: ""
+         type: "posts"
+       values:
+         layout: "post"
+     - scope:
+         path: ""
+       values:
+         layout: "default"
  
   
   
