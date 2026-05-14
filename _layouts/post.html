@@ -1,0 +1,28 @@
+---
+layout: default
+---
+
+<article>
+  <h1>{{ page.title }}</h1>
+  <span class="post-date">{{ page.date | date: "%B %d, %Y" }}</span>
+
+  <div class="post-content">
+    {{ content }}
+  </div>
+</article>
+
+<footer>
+  <nav>
+    {% if page.previous %}
+      <a href="{{ page.previous.url | relative_url }}">← {{ page.previous.title }}</a>
+    {% endif %}
+    
+    {% if page.next %}
+      <a href="{{ page.next.url | relative_url }}">{{ page.next.title }} →</a>
+    {% endif %}
+  </nav>
+  
+  <div class="subscribe">
+    <strong>Enjoy this post?</strong> Subscribe <a href="{{ '/feed.xml' | relative_url }}">via RSS</a> for more.
+  </div>
+</footer>
