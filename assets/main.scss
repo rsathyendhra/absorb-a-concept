@@ -1,0 +1,177 @@
+---
+# Only the main Sass file needs front matter (the dashes are enough)
+---
+
+// Typography: Anthropic-inspired pairing — serif headings, clean sans body.
+// Loaded via Google Fonts in _includes/custom-head.html.
+$base-font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !default;
+$headline-font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+
+$base-font-size:   18px !default;
+$base-line-height: 1.6 !default;
+$spacing-unit:     34px !default;
+// Overall page wrapper (header/footer/main/posts/pages) — widened to use
+// more of the screen on large displays.
+$content-width:    920px !default;
+
+// Color palette (monochrome) — minima's gem version has no skin support,
+// so colors are hardcoded here instead of via `skin:` config.
+$text-color:       #111111 !default;
+$background-color: #ffffff !default;
+$brand-color:      #111111 !default;
+$grey-color:       #555555 !default;
+$grey-color-light: #dddddd !default;
+$grey-color-dark:  #222222 !default;
+
+@import "minima";
+
+// With a black brand color, links need underlines to stand apart from body
+// text; navigation and post-list titles stay clean.
+a, a:visited {
+  color: $text-color;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+a:hover {
+  color: $grey-color;
+}
+
+.site-title, .site-title:visited,
+.site-nav .page-link,
+.post-link, .post-link:visited {
+  text-decoration: none;
+  color: $text-color;
+}
+
+pre, code {
+  background-color: #f6f6f6;
+  border: 1px solid #e2e2e2;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: $headline-font-family;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.post-title, .page-heading, .post-list-heading {
+  font-family: $headline-font-family;
+  font-weight: 600;
+}
+
+.post-content, .post-list {
+  font-family: $base-font-family;
+}
+
+.post-meta {
+  font-family: $base-font-family;
+  letter-spacing: 0.02em;
+}
+
+.post-list > li {
+  margin-bottom: $spacing-unit;
+}
+
+.post-content {
+  line-height: 1.7;
+}
+
+.post-content h1, .post-content h2 {
+  margin-top: $spacing-unit * 1.2;
+  margin-bottom: $spacing-unit / 2;
+}
+
+// Previous/next post navigation at the bottom of each post.
+.post-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: $spacing-unit / 2;
+  margin-top: $spacing-unit;
+  padding-top: $spacing-unit / 2;
+  border-top: 1px solid $grey-color-light;
+}
+
+.post-nav-item {
+  display: flex;
+  flex-direction: column;
+  max-width: 48%;
+  text-decoration: none;
+
+  &:hover .post-nav-title {
+    text-decoration: underline;
+  }
+}
+
+.post-nav-next {
+  margin-left: auto;
+  text-align: right;
+}
+
+.post-nav-label {
+  color: $grey-color;
+  font-size: 0.85em;
+}
+
+.post-nav-title {
+  font-family: $headline-font-family;
+  font-weight: 600;
+}
+
+// Email subscription box (rendered by _includes/subscribe.html).
+.subscribe-box {
+  border: 1px solid $text-color;
+  padding: $spacing-unit / 1.5;
+  margin-bottom: $spacing-unit;
+}
+
+.subscribe-heading {
+  font-family: $headline-font-family;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.subscribe-blurb {
+  color: $grey-color;
+  font-size: 0.9em;
+  margin-bottom: $spacing-unit / 2;
+}
+
+.subscribe-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.subscribe-input {
+  flex: 1 1 220px;
+  padding: 10px 14px;
+  font-family: $base-font-family;
+  font-size: 0.95em;
+  color: $text-color;
+  background-color: $background-color;
+  border: 1px solid $text-color;
+  border-radius: 0;
+
+  &:focus {
+    outline: 2px solid $text-color;
+    outline-offset: 1px;
+  }
+}
+
+.subscribe-button {
+  padding: 10px 24px;
+  font-family: $base-font-family;
+  font-size: 0.95em;
+  font-weight: 600;
+  color: $background-color;
+  background-color: $text-color;
+  border: 1px solid $text-color;
+  border-radius: 0;
+  cursor: pointer;
+
+  &:hover {
+    color: $text-color;
+    background-color: $background-color;
+  }
+}

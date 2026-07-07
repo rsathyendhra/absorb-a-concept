@@ -1,36 +1,37 @@
 title: Absorb a Concept
-author: 
-  author:sathyendhra
-  #email:rsathyendhra@outlook.com
-  
-description: This blog serves as a single point of reference for the concepts I have explored.The content of concepts is revised as and when I get a better understanding of it.I am hoping it helps the readers.
+author: Sathyendhra
+#email: rsathyendhra@outlook.com
+
+description: This blog serves as a single point of reference for the concepts I have explored. The content is revised as and when I get a better understanding of it. I am hoping it helps the readers.
 
 #google_analytics:
 theme: minima
 
 
-minima:
-  # Minima skin selection. Available skins are:
-  #   Available skins:
-  #     * classic            Default, light color scheme.
-  #     * dark               Dark variant of the classic skin.
-  #     * auto               Adaptive skin based on the default classic and dark skins.
-  #     * solarized-light    Light variant of solarized color scheme.
-  #     * solarized-dark     Dark variant of solarized color scheme.
-  #     * solarized          Adaptive skin for solarized color scheme skins.
-  skin: solarized-light
+# Note: minima's published gem (2.5.x) has no `skin:` support — that feature
+# only exists on minima's unreleased GitHub master branch. Colors are instead
+# set directly via Sass variable overrides in assets/main.scss.
 
-nav_pages:
+# Email subscriptions (form rendered in the footer via _includes/subscribe.html).
+# Create a free account at https://buttondown.com and set your username below.
+# The form is hidden until this value is set — uncomment to enable.
+#buttondown_username: rsathyendhra
+
+header_pages:
   - about.md
   - 01_technical.md
   #- 02_allvmware.md
+
+exclude:
+  - CLAUDE.md
+  - local_run_jekyll_mac.md
 
 
  
   
   
   
-show_excerpts: false
+show_excerpts: true
 
 #   Hide syndication feed subscription link.
 #     RSS / Atom feed link is always rendered as the last item of social-links

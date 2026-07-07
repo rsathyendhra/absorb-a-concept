@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>FastAPI Tutorial: Architecture, Core Concepts, and a CRUD API Example | Absorb a Concept</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="FastAPI Tutorial: Architecture, Core Concepts, and a CRUD API Example" />
+<meta name="author" content="Sathyendhra" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="This blog serves as a single point of reference for the concepts I have explored. The content is revised as and when I get a better understanding of it. I am hoping it helps the readers." />
+<meta property="og:description" content="This blog serves as a single point of reference for the concepts I have explored. The content is revised as and when I get a better understanding of it. I am hoping it helps the readers." />
+<link rel="canonical" href="http://localhost:4000/technical/2026/02/18/fastapi.html" />
+<meta property="og:url" content="http://localhost:4000/technical/2026/02/18/fastapi.html" />
+<meta property="og:site_name" content="Absorb a Concept" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2026-02-18T00:00:00+05:30" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="FastAPI Tutorial: Architecture, Core Concepts, and a CRUD API Example" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sathyendhra"},"dateModified":"2026-02-18T00:00:00+05:30","datePublished":"2026-02-18T00:00:00+05:30","description":"This blog serves as a single point of reference for the concepts I have explored. The content is revised as and when I get a better understanding of it. I am hoping it helps the readers.","headline":"FastAPI Tutorial: Architecture, Core Concepts, and a CRUD API Example","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/technical/2026/02/18/fastapi.html"},"url":"http://localhost:4000/technical/2026/02/18/fastapi.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Absorb a Concept" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Absorb a Concept</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a><a class="page-link" href="/technical/">Technical</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">FastAPI Tutorial: Architecture, Core Concepts, and a CRUD API Example</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2026-02-18T00:00:00+05:30" itemprop="datePublished">Feb 18, 2026
+      </time>
+      &middot; 8 min read
+</p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p><img src="/assets/images/fastapi/fastapi_blog_header_3.svg" alt="fastAPI_Architecture" /></p>
+
+<h2 id="introduction">Introduction</h2>
+<p>I’ve been hearing a lot about a Python web framework called FastAPI. The purpose of this post is to understand the basics of FastAPI by exploring:</p>
+
+<ul>
+  <li>What is FastAPI?</li>
+  <li>When to use it?</li>
+  <li>When not to use it?</li>
+  <li>FastAPI vs DRF</li>
+  <li>FastAPI Architecture</li>
+  <li>FastAPI Core Components</li>
+  <li>How to get started with a simple project</li>
+</ul>
+
+<h4 id="what-is-fastapi">What is FastAPI?</h4>
+<p>FastAPI is a Python web framework for building APIs. Decorators (like @app.get(“/end_point”) are used to define endpoints, it uses Python type hints to automatically validate incoming data, convert types and generate interactive API documentation (at /docs) out of the box.</p>
+
+<p>It is built on Starlette (for the web layer) and Pydantic (for data validation)</p>
+
+<h4 id="what-is-starlette">What is Starlette?</h4>
+<p>Starlette is a lightweight python web framework built on ASGI (Asynchronous Server Gateway Interface) which is sucessor to WSGI (Web Server Gateway Interface). FastAPI is built on top of Starlette by adding automatic data validation, serialization and API docs to it.</p>
+
+<h4 id="what-is-pydantic">What is Pydantic?</h4>
+<p>Pydantic is a python library for data validation using type hints. Let me elaborate with an illustration for better understanding.</p>
+
+<h4 id="pydantic-model-example">Pydantic model example</h4>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from pydantic import BaseModel
+
+class Customer(BaseModel):
+    name: str
+    age: int
+    email: str
+
+user = Customer(name="Alice", age=25, email="alice@example.com")  # works
+user = Customer(name="Alice", age="not a number", email="...")    # validation error
+</code></pre></div></div>
+
+<p>The above class takes 3 parameters as input name as string, age an integer, and email as string. If the user passes an invalid  data type like e.g., age=”not a number” it will throw a validation error as it is expecting an integer. However, Pydantic does “type coercion”. Let us consider the user passes age=”45”, the expectation is to throw a validation error as the input is a “string” and expected type is “int” but in reality due to the intervention of “type coercion” the string is automatically converted to integer and the execution continues.</p>
+
+<p>FastAPI uses Pydantic under the hood so that when a request comes in, the JSON body is automatically parsed and validated against your model before your function even runs.</p>
+
+<h3 id="when-to-choose-fastapi">When to choose FastAPI?</h3>
+<p>One should use FastAPI if speed, validation and clean code take precedence. The best use cases would be:</p>
+<ul>
+  <li>Building highly performant REST APIs</li>
+  <li>ML/AI services</li>
+  <li>Auto-generated documentation matters</li>
+  <li>Rapid prototyping</li>
+</ul>
+
+<h3 id="when-not-to-choose-fastapi">When not to choose FastAPI?</h3>
+<p>If your ecosystem is already using a robust framework (like Django for example) it is not advisable to switch to FastAPI unless you have a niche requirement to do so. Some factors to help make the decision are listed below:</p>
+<ul>
+  <li>Avoid FastAPI if your application involves CPU-Intensive tasks (image processing,video encoding etc). You can workaround it but it is not possible out of the box.</li>
+  <li>If you need one web framework with Full Stack needs then FastAPI is not the right fit.</li>
+  <li>Asynchronous programming comes with a little bit of learning curve, if the team has less experience in asynchronous programming and do not have the luxury of investing time to learn it then it is advisable not to use FastAPI.</li>
+  <li>If your project does not support async or does not have the need of async then it is best to avoid FastAPI. Without async you will lose the primary performance benefit of FastAPI. You can still use FastAPI without async but there are other frameworks better suited for the use case.</li>
+</ul>
+
+<h3 id="fastapi-vs-drf">FastAPI vs DRF</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Feature</th>
+      <th>FastAPI</th>
+      <th>DRF</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Based on</td>
+      <td>Starlette+Pydantic</td>
+      <td>Django</td>
+    </tr>
+    <tr>
+      <td>Performance</td>
+      <td>Very fast</td>
+      <td>Slower</td>
+    </tr>
+    <tr>
+      <td>Object Relational Mapping</td>
+      <td>Not built-in</td>
+      <td>Django ORM (built-in and powerful)</td>
+    </tr>
+    <tr>
+      <td>Admin Panel</td>
+      <td>No</td>
+      <td>Yes (Django admin)</td>
+    </tr>
+    <tr>
+      <td>Authentication &amp; Permissions</td>
+      <td>Basic</td>
+      <td>Rich &amp; built-in)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="core-components">Core Components</h2>
+
+<p><img src="/assets/images/fastapi/fastapi-architecture.png" alt="fastAPI_Architecture" /></p>
+
+<ul>
+  <li>
+    <p>ASGI Server (Uvicorn)
+The server that runs the FastAPI app. It receives HTTP requests from clients and sends responses back. Built on uvloop (a fast async event loop) and httptools (a fast HTTP parser)</p>
+  </li>
+  <li>
+    <p>Starlette
+FastAPI directly subclasses Starlette, inheriting all its capabilities. It handles the routing, middleware, request/response objects, websockets and static files.</p>
+  </li>
+  <li>
+    <p>Pydantic
+This component is responsible for data validation. It powers all input validation and output serialization. Once you define a BaseModel using Python type hints, FastAPI enforces it automatically — no extra code needed for it.</p>
+  </li>
+  <li>
+    <p>OpenAPI &amp; Auto Docs
+FastAPI auto-generates an OpenAPI schema from your code. Two interactive docs UIs are available out of the box — Swagger UI at /docs and ReDoc at /redoc - without any extra setup</p>
+  </li>
+  <li>
+    <p>Dependency Injection (DI) System
+A clean system to share reusable logic across routes — database connections, authentication, configuration. FastAPI resolves dependencies automatically before calling your handler.</p>
+
+    <h4 id="dependency-injection-example">Dependency Injection example?</h4>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from fastapi import FastAPI, Depends
+
+app = FastAPI()
+
+# --- Dependency function ---
+def get_db():
+  db = connect_to_database()
+  try:
+      yield db        # provides the db to the route
+  finally:
+      db.close()      # runs after the route finishes
+
+# --- Route using the dependency ---
+@app.get("/items")
+def read_items(db = **Depends**(get_db)):
+  return db.query("SELECT * FROM items")
+</code></pre></div>    </div>
+    <p>Steps:</p>
+    <ol>
+      <li>Define a dependency function (for e.g., def get_db which returns a database handle)</li>
+      <li>Call the dependency function name in the route using “Depends” (Depends(get_db)</li>
+    </ol>
+
+    <h4 id="dependency-injection-vs-direct-call">Dependency Injection vs Direct Call</h4>
+
+    <p>Looking at the above example, one may argue that one can use the direct call of the method (e.g., get_db()) why use dependency injection? On
+the surface, it looks similar but it does more than a direct call. Below are some points that make it different:</p>
+    <ol>
+      <li>LifeCycle Management
+With a direct call, you have to manage setup and teardown yourself:
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python# Direct — you manage everything
+@app.get("/items")
+def read_items():
+   db = get_db()
+   try:
+       result = db.query(...)
+       return result
+   finally:
+       db.close()   # easy to forget!
+</code></pre></div>        </div>
+        <p>With Depends(), the dependency handles it:</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>def get_db():
+   db = connect()
+   try:
+       yield db
+   finally:
+       db.close()   # always runs, even on errors
+
+@app.get("/items")
+def read_items(db = Depends(get_db)):
+   return db.query(...)   # clean, nothing to manage
+</code></pre></div>        </div>
+      </li>
+      <li>
+        <p>Caching within a request
+If multiple routes need the same method, Depends() calls it only once per request and reuses the result but with direct call the method is called multiple times within the same request.</p>
+      </li>
+      <li>Automatic parameter injection
+Dependencies can read query params, headers, and path params directly from the request — without you passing anything but with a direct call, you’d have to extract the header manually in every route.</li>
+    </ol>
+  </li>
+  <li>
+    <p>Middleware
+Functions that run on every request before it reaches your route handler, and on every response before it goes back to the client. Common uses: CORS, logging, authentication, GZip compression.</p>
+  </li>
+</ul>
+
+<h2 id="fast-api-workflow">Fast API Workflow</h2>
+
+<p><img src="/assets/images/fastapi/fastapi-workflow.png" alt="fastAPI_Workflow" style="width: 50%; height: auto;" /></p>
+
+<h2 id="getting-started">Getting Started</h2>
+
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+  <li>Python 3.10 or higher</li>
+</ul>
+
+<h3 id="problem-statement">Problem Statement</h3>
+<p>Develop APIs for a book store. The API should be able to list all books in stock, add a new book to the bookstore inventory, update a book entry and delete a book entry</p>
+
+<p>Check out the source code on <a href="https://github.com/rsathyendhra/sample-fastapi">GitHub-FastAPI-Sample</a>.</p>
+
+<h5 id="1-install-fastapi-module">1. Install fastapi module</h5>
+<p>pip install fastapi uvicorn</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> % pip install fastapi uvicorn
+Collecting fastapi
+  Downloading fastapi-0.135.1-py3-none-any.whl.metadata (30 kB)
+Collecting uvicorn
+  Downloading uvicorn-0.41.0-py3-none-any.whl.metadata (6.7 kB)
+....
+.....
+Successfully installed annotated-doc-0.0.4 annotated-types-0.7.0 anyio-4.12.1 click-8.3.1 fastapi-0.135.1 h11-0.16.0 idna-3.11 pydantic-2.12.5 pydantic-core-2.41.5 starlette-0.52.1 typing-extensions-4.15.0 typing-inspection-0.4.2 uvicorn-0.41.0
+</code></pre></div></div>
+
+<h5 id="2-import-libraries-and-create-fastapi-object">2. Import libraries and create FastAPI object</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import Optional
+
+app = FastAPI()
+</code></pre></div></div>
+
+<h5 id="3-define-schema">3. Define schema</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Input schema — what the client sends
+class Book(BaseModel):
+    name: str
+    price: float
+    in_stock: bool = True
+
+# Update schema — all fields optional for partial updates
+class BookUpdate(BaseModel):
+    name: Optional[str] = None
+    price: Optional[float] = None
+    in_stock: Optional[bool] = None
+
+# Output schema — what the API returns
+class BookOut(BaseModel):
+    id: int
+    name: str
+    price: float
+    in_stock: bool
+</code></pre></div></div>
+<h5 id="4-fastapi-crud">4. FastAPI CRUD</h5>
+
+<h6 id="41-create---post">4.1. Create - POST</h6>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>db = {}   # fake in-memory database
+counter = 0
+
+@app.post("/books", response_model=BookOut, status_code=201)
+def create_item(item: Book):
+    global counter
+    counter += 1
+    db[counter] = {"id": counter, **item.model_dump()}
+    return db[counter]
+</code></pre></div></div>
+<p>Note: The in-memory database is not recommended for production.</p>
+
+<h6 id="42-read---get">4.2. Read - GET</h6>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Read all
+@app.get("/books", response_model=list[BookOut])
+def list_items(skip: int = 0, limit: int = 10):
+    return list(db.values())[skip: skip + limit]
+
+# Read one
+@app.get("/books/{item_id}", response_model=BookOut)
+def get_item(item_id: int):
+    if item_id not in db:
+        raise HTTPException(status_code=404, detail="Book not found")
+    return db[item_id]
+</code></pre></div></div>
+
+<h6 id="43-update---putpatch">4.3. Update - PUT/PATCH</h6>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># PUT — full update, replaces the entire record
+@app.put("/books/{item_id}", response_model=BookOut)
+def update_item(item_id: int, item: Book):
+    if item_id not in db:
+        raise HTTPException(status_code=404, detail="Book not found")
+    db[item_id] = {"id": item_id, **item.model_dump()}
+    return db[item_id]
+
+# PATCH — partial update, only changes fields you send
+@app.patch("/books/{item_id}", response_model=BookOut)
+def partial_update_item(item_id: int, item: BookUpdate):
+    if item_id not in db:
+        raise HTTPException(status_code=404, detail="Item not found")
+    stored = db[item_id]
+    updates = model_dump(exclude_unset=True)
+    stored.update(updates)
+    db[item_id] = stored
+    return db[item_id]
+</code></pre></div></div>
+
+<h6 id="44-delete---delete">4.4. Delete - DELETE</h6>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@app.delete("/books/{item_id}", status_code=204)
+def delete_item(item_id: int):
+    if item_id not in db:
+        raise HTTPException(status_code=404, detail="Book not found")
+    del db[item_id]
+</code></pre></div></div>
+
+<h5 id="5-add-steps-2-to-4-in-mainpy-and-run-below-command">5. Add steps 2 to 4 in main.py and run below command:</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% uvicorn main:app --reload
+INFO:     Will watch for changes in these directories: ['/Users/sathyendhra/django_project3/fastapi-project']
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [29028] using StatReload
+INFO:     Started server process [29030]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+</code></pre></div></div>
+
+<h5 id="9-open-http1270018000docs-in-the-browser">9. Open “http://127.0.0.1:8000/docs” in the browser</h5>
+
+<p><img src="/assets/images/fastapi/fastapi_homepage.png" alt="fastAPI_Homepage" /></p>
+
+<h5 id="10-create-a-book-item-using-fastapi---swagger-ui">10. Create a book item using FastAPI - Swagger UI</h5>
+
+<p><img src="/assets/images/fastapi/fastapi_post_request.png" alt="fastAPI_Post Request" /></p>
+
+<p><img src="/assets/images/fastapi/fastapi_post_response.png" alt="fastAPI_Post Response" /></p>
+
+<h5 id="11-list-all-books-in-the-book-store-using-fastapi---swagger-ui">11. List all books in the book store using FastAPI - Swagger UI</h5>
+
+<p><img src="/assets/images/fastapi/fastapi_get_request_response.png" alt="fastAPI_get request response" /></p>
+
+<h5 id="12-update-availability-of-a-book-in-the-book-store">12. Update availability of a book in the book store</h5>
+
+<p><img src="/assets/images/fastapi/fastapi_patch_request.png" alt="fastAPI_patch request" /></p>
+
+<p><img src="/assets/images/fastapi/fastapi_patch_response.png" alt="fastAPI_patch response" /></p>
+
+<h5 id="13-delete-a-book-from-the-book-store">13. Delete a book from the book store</h5>
+
+<p><img src="/assets/images/fastapi/fastapi_delete_request_response.png" alt="fastAPI_delete request response" /></p>
+
+<h5 id="14-list-all-books-in-the-book-store-after-update-and-delete-operations">14. List all books in the book store after update and delete operations</h5>
+
+<p><img src="/assets/images/fastapi/fastapi_request_response_get_final.png" alt="fastAPI_get final response" /></p>
+
+<h2 id="understanding-decorators-in-python--optional-section-for-people-well-versed-with-this-python-feature">Understanding Decorators in python ( optional section for people well versed with this python feature)</h2>
+<p>As FastAPI uses decorators heavily, let’s understand this elegant Python feature. Basically, a decorator is a function that wraps another function to add behaviour before or after it runs without modifying the existing function.</p>
+
+<p>Think of a decorator as a notebook cover — the notebook (your function) stays the same, the cover adds something around it.</p>
+
+<p>Let us understand this with examples:</p>
+
+<ul>
+  <li>Without decorator</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>def my_decorator(func):
+    def wrapper():
+        print("Before")
+        func()          # call the original function
+        print("After")
+    return wrapper
+
+def greet():
+    print("Hello!")
+
+# manually wrap it
+greet = my_decorator(greet)
+greet()
+
+# Output:
+# Before
+# Hello!
+# After
+</code></pre></div></div>
+
+<ul>
+  <li>With decorator</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>def my_decorator(func):
+    def wrapper():
+        print("Before")
+        func()
+        print("After")
+    return wrapper
+
+@my_decorator       # same as: greet = my_decorator(greet)
+def greet():
+    print("Hello!")
+
+greet()
+
+# Output:
+# Before
+# Hello!
+# After
+</code></pre></div></div>
+
+<ul>
+  <li>Decorator with arguments</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>def repeat(times):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            for _ in range(times):
+                func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+@repeat(times=3)
+def greet():
+    print("Hello!")
+
+greet()
+# Hello!
+# Hello!
+# Hello!
+</code></pre></div></div>
+
+<h2 id="conclusion">Conclusion</h2>
+<p>In this post we have explored the basics of FastAPI, equipping you to start building projects using this web framework. As next step one can learn about integrating FastAPI with SQLAlchemy, a powerful combination for building database-backed APIs and also explore writing automated tests for your API using FastAPI’s TestClient tool.</p>
+
+<h2 id="references">References</h2>
+<ol>
+  <li>https://fastapi.tiangolo.com/</li>
+  <li>https://docs.pydantic.dev</li>
+  <li>https://www.uvicorn.org</li>
+  <li>https://www.starlette.io</li>
+  <li>https://docs.python.org/3/glossary.html#term-decorator</li>
+  <li>https://github.com/zhanymkanov/fastapi-best-practices?tab=readme-ov-file#cpu-intensive-tasks</li>
+</ol>
+
+  </div><nav class="post-nav"><a class="post-nav-item post-nav-prev" href="/technical/2026/01/07/rest.html">
+      <span class="post-nav-label">&larr; Previous</span>
+      <span class="post-nav-title">Understanding REST</span>
+    </a><a class="post-nav-item post-nav-next" href="/technical/2026/06/17/mcp.html">
+      <span class="post-nav-label">Next &rarr;</span>
+      <span class="post-nav-title">Understanding MCP: What It Is, What It Isn&#39;t, and How to Build It</span>
+    </a></nav><a class="u-url" href="/technical/2026/02/18/fastapi.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper"><h2 class="footer-heading">Absorb a Concept</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Sathyendhra</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>This blog serves as a single point of reference for the concepts I have explored. The content is revised as and when I get a better understanding of it. I am hoping it helps the readers.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

@@ -1,0 +1,1659 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2026-07-07T21:07:33+05:30</updated><id>http://localhost:4000/feed.xml</id><title type="html">Absorb a Concept</title><subtitle>This blog serves as a single point of reference for the concepts I have explored. The content is revised as and when I get a better understanding of it. I am hoping it helps the readers.</subtitle><author><name>Sathyendhra</name></author><entry><title type="html">Understanding MCP: What It Is, What It Isn’t, and How to Build It</title><link href="http://localhost:4000/technical/2026/06/17/mcp.html" rel="alternate" type="text/html" title="Understanding MCP: What It Is, What It Isn’t, and How to Build It" /><published>2026-06-17T00:00:00+05:30</published><updated>2026-06-17T00:00:00+05:30</updated><id>http://localhost:4000/technical/2026/06/17/mcp</id><content type="html" xml:base="http://localhost:4000/technical/2026/06/17/mcp.html"><![CDATA[<p><img src="/assets/images/mcp/MCP_new.png" alt="mcp_header" /></p>
+
+<h2 id="introduction">Introduction</h2>
+<p>This post explains MCP, showing why it’s not just a REST replacement, and walks through a practical use case explaining. A working use case showing MCP in action that will help you grasp the concept better. Even though MCP was introduced to the world in late 2024 by Anthropic, it’s adoption in the world of AI has been swift. MCP was created at Anthropic by engineers David Soria Parra and Justin Spahr-Summers. In December 2025, Anthropic donated the MCP to the Agentic AI Foundation, a directed fund under the Linux Foundation, making it truly vendor-neutral and community-driven going forward. By the end of this blog we will get a high level understanding about why MCP is called the USB-C for AI</p>
+
+<h2 id="what-is-mcp">What is MCP?</h2>
+<p>MCP stands for ‘Model Context Protocol’. It is an open standard that allow AI applications to interact with data systems.</p>
+
+<h2 id="why-mcp">Why MCP?</h2>
+<p>MCP standardises the way an AI system connect to external tool or data sources. The AI system can be an AI application that you’ve developed or AI assistants like Claude, Grok, chatgpt, gemini etc. An example would give a better understanding:</p>
+
+<p>Let’s say we are building an AI application called “Efficient Me” which needs access to your calendar to understand your workload and optimise your time based on certain guidelines. So, we code a connector which connects our AI application to the google calendar. The Application would also need access to your slack to notify you about only important meetings, messages and discussion threads. For this another connector has to be written. While implementing a connector, security aspects (for e.g., your gmail credentials should not be exposed to the AI application) should be given prominence.</p>
+
+<p>Writing separate connectors for every custom integration is inefficient and fragmented. MCP solved this very problem by creating a common language so our AI system can work with any service that supports it. MCP serves as an infrastructure to our AI Application by giving it safe, standardised access to our tools and data.</p>
+
+<h2 id="key-benefits-of-mcp">Key Benefits of MCP</h2>
+<ul>
+  <li>Standardization – Services don’t need to build separate integrations for every AI app; they just support MCP once</li>
+  <li>Composability – You can chain multiple tools together seamlessly (e.g., search Drive → create Asana task → send Slack notification)</li>
+  <li>Security – Credentials and permissions stay on your machine; Claude doesn’t see them directly</li>
+  <li>Extensibility – Developers can build custom MCP servers for proprietary or niche systems</li>
+</ul>
+
+<h3 id="️-a-note-on-security">⚠️ A Note on Security</h3>
+
+<p>While MCP’s architecture provides security benefits, connecting public MCP servers requires caution. We’ll dive into security considerations in detail later in this post, but keep this in mind: not all public servers are equally trustworthy. Verify the source, check for HTTPS+OAuth, and ensure you trust the maintainers before connecting.</p>
+
+<h2 id="mcp-architecture">MCP Architecture</h2>
+
+<p><img src="/assets/images/mcp/mcp_architecture_ai_app.svg" alt="mcp_architecture_ai_app.svg" /></p>
+
+<p>The Basic Flow is as follows:</p>
+<ul>
+  <li>You connect a service (e.g., Gmail) via AI app</li>
+  <li>MCP establishes a connection between AI app and that service</li>
+  <li>AI app can now call tools on that service (read emails, create tasks, etc.)</li>
+  <li>Results come back for AI app to processes them</li>
+</ul>
+
+<p>Now you might wonder: “Doesn’t this sound like a REST API?” The answer is nuanced. While both MCP and REST 
+are remote procedure call (RPC) systems—asking a remote system to do something and getting results back—they 
+serve fundamentally different purposes and are optimized for different scenarios. Let’s explore these distinctions.</p>
+
+<h2 id="rest-api-and-mcp-clear-distinction">REST API and MCP: Clear distinction</h2>
+<p>When trying to understand MCP, one might correlate it to REST API. The main reason for this correlation is that both REST and MCP are Remote Procedure Call (RPC) systems i.e., asking a remote system to do something and get the restult back. When questions like “can MCP replace REST?” popup in our minds we need to understand the nuances to answer them.</p>
+
+<p>The key distinction is that:</p>
+<ul>
+  <li>REST is about endpoints that many clients call. For example, a website and a mobile app can both hit the same endpoints.</li>
+  <li>MCP is about tools (i.e., functions) that an AI app/Claude can understand and invoke. For example, Claude decides which tool to call based on the user input which under the hood results in MCP client making the call to the MCP server to fulfill a user request.</li>
+</ul>
+
+<h4 id="rest-vs-mcp">REST vs MCP</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Dimension</th>
+      <th>REST</th>
+      <th>MCP</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Core concept</td>
+      <td>RPC via HTTP</td>
+      <td>RPC via JSON-RPC</td>
+    </tr>
+    <tr>
+      <td>Discovery</td>
+      <td>OpenAPI schema</td>
+      <td>MCP schema</td>
+    </tr>
+    <tr>
+      <td>Authentication</td>
+      <td>Client provides credentails (header)</td>
+      <td>Server holds credentials</td>
+    </tr>
+    <tr>
+      <td>Error Handling</td>
+      <td>HTTP status code + JSON</td>
+      <td>JSON text response</td>
+    </tr>
+    <tr>
+      <td>Optimised for</td>
+      <td>Many clients and high performance</td>
+      <td>1-2 servers per user and seconds of latency acceptable</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Now the question is when can MCP actually replace REST and what is practical?</p>
+<ul>
+  <li>Internal systems: You’re building a system where the AI application(like claude) is the only client. In this case No REST API needed; MCP is simpler.</li>
+  <li>Wrapping existing REST: There is  public REST API that is already used by other apps. Build an MCP server that wraps it for your AI APP. Both coexist—REST for scale, MCP for your custom AI APP.</li>
+  <li>Credential-sensitive operations: You want your AI application to call Gmail without handling keys. MCP server is practical in this case as it manages the auth part, your AI APP will never see the secrets.</li>
+</ul>
+
+<p>It is not REST or MCP, in the real world it is REST and MCP. REST APIs handle the infrastructure, serving as the backbone and MCP wraps part of it as a AI APP facing interface.</p>
+
+<h4 id="mcp-vs-tool-calling">MCP vs Tool Calling</h4>
+<p>MCP and Tool calling is confusing for the people who are new to world of AI engineering. They are two essential AI concepts which are important to be absorbed.</p>
+
+<h5 id="tool-calling-also-called-function-calling">Tool Calling (also called Function Calling)</h5>
+<p>A Tool calling provides the ability for an AI model to request external functions be executed. It is used by all modern LLMs(OpenAI, Claude, Gemini, Llama, etc.). The purpose is to turn AI from text generator/predictor into an action-taking agent. For example, User asks “What’s the weather in Bengaluru?” → AI decides to call get_weather() function → gets real data → responds. Without tool calling it can only guess but with an authentic get_weather() function call the response is precise.</p>
+
+<h5 id="mcp-model-context-protocol">MCP (Model Context Protocol)</h5>
+<p>MCP is a standardized protocol for exposing and discovering tools securely. It is used by all modern LLMs. The purpose is to stop building N×M custom connectors; build server once (by defining tools once within) and  use it as USB whenever wherever it is needed. For e.g., GitHub MCP server exposes tools which can be used by ChatGPT, used by Claude Application and also used by Gemini serving its purpose of build once and use everywhere.</p>
+
+<h2 id="mcp-types">MCP Types</h2>
+<p>Before getting into MCP server we need to understand MCP types. There are 3 MCP types namely tools, resources and prompt context. Below table helps understand each type better:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Description</th>
+      <th>Tools</th>
+      <th>Resource</th>
+      <th>Prompts</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Who Controls It</td>
+      <td>AI Model</td>
+      <td>Application</td>
+      <td>User/Application</td>
+    </tr>
+    <tr>
+      <td>When Is It Invoked</td>
+      <td>When AI decides it is needed</td>
+      <td>When app decides to load it</td>
+      <td>When user explicitly selects it</td>
+    </tr>
+    <tr>
+      <td>Use Case</td>
+      <td>send an email</td>
+      <td>Here is the context for decision making</td>
+      <td>Write a weekly report using this template</td>
+    </tr>
+    <tr>
+      <td>Discovery Method</td>
+      <td>tools/list</td>
+      <td>resources/list</td>
+      <td>prompts/list</td>
+    </tr>
+    <tr>
+      <td>Frequency Of Use</td>
+      <td>Very common</td>
+      <td>Growing	Emerging / Underutilized</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Can Modify State?</td>
+      <td>Yes (create, update, delete)</td>
+      <td>No (read-only)</td>
+      <td>No (instructions only)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="security-considerations-during-implementation">Security Considerations During Implementation</h3>
+
+<p>Before we build our calculator example, it’s worth noting that in real-world scenarios, MCP servers handle sensitive operations like reading your calendar or sending emails. The basic calculator we’ll build is low-risk, but the principles you’ll learn apply equally to security-critical servers. We’ll explore comprehensive security best practices later in this post.</p>
+
+<h2 id="mcp-in-action">MCP in action</h2>
+
+<p>Check out the source code on <a href="https://github.com/rsathyendhra/mcp-calculator">GitHub-MCP-calculator</a>.</p>
+
+<h3 id="how-to-build-a-simple-mcp-server-using-python">How to build a simple MCP server using python?</h3>
+<p>Let us build a simple calculator MCP which does basic arithmetic operations.</p>
+
+<h5 id="step-1--mcp-module-installation">Step 1 : MCP module installation</h5>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; pip install mcp
+</code></pre></div></div>
+<h5 id="step-2--create-simple_mcp_serverpy">Step 2 : Create simple_mcp_server.py</h5>
+<h5 id="step-21-import-module">Step 2.1: Import module</h5>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import asyncio 
+from mcp.server.fastmcp import FastMCP
+</code></pre></div></div>
+<p>Refer to Appendix A below for a better understanding of asyncio</p>
+
+<h5 id="step-22-create-mcp-server-instance">Step 2.2: Create MCP server instance</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mcp = FastMCP("calculator")
+</code></pre></div></div>
+<h5 id="step-23-define-tools-that-mcp-will-expose">Step 2.3: Define tools that MCP will expose</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  
+@mcp.tool()
+def add(a: float, b: float) -&gt; float:
+    """Add two numbers together"""
+    return a + b
+
+
+@mcp.tool()
+def subtract(a: float, b: float) -&gt; float:
+    """Subtract b from a"""
+    return a - b
+
+
+@mcp.tool()
+def multiply(a: float, b: float) -&gt; float:
+    """Multiply two numbers"""
+    return a * b
+
+
+@mcp.tool()
+def divide(a: float, b: float) -&gt; float:
+    """Divide a by b"""
+    if b == 0:
+        raise ValueError("Cannot divide by zero")
+    return a / b
+
+
+@mcp.tool()
+def power(base: float, exponent: float) -&gt; float:
+    """Raise base to the power of exponent"""
+    return base ** exponent
+
+
+@mcp.tool()
+def square_root(number: float) -&gt; float:
+    """Calculate the square root of a number"""
+    if number &lt; 0:
+        raise ValueError("Cannot calculate square root of negative number")
+    return number ** 0.5
+</code></pre></div></div>
+<h5 id="step-24-run-the-server">Step 2.4 Run the server</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  if __name__ == "__main__":
+    print("=" * 60)
+    print("🔧 Calculator MCP Server")
+    print("=" * 60)
+    print("\nAvailable tools:")
+    print("  • add(a, b) - Add two numbers")
+    print("  • subtract(a, b) - Subtract b from a")
+    print("  • multiply(a, b) - Multiply two numbers")
+    print("  • divide(a, b) - Divide a by b")
+    print("  • power(base, exponent) - Raise base to power")
+    print("  • square_root(number) - Calculate square root")
+    print("\nStarting server on stdio...")
+    print("=" * 60)
+    print("\n✅ Server running. Connect your client to use these tools.\n")
+    
+    # Run server using stdio transport
+    mcp.run(transport="stdio")
+</code></pre></div></div>
+<h5 id="step-3--create-app-with-mcp-client">Step 3 : Create app with mcp client</h5>
+
+<h5 id="step-31-import-modules">Step 3.1: Import modules</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import asyncio
+import sys
+from typing import Optional
+from contextlib import AsyncExitStack
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+from openai import OpenAI
+from dotenv import load_dotenv
+</code></pre></div></div>
+
+<h5 id="step-32-create-calculatomcpclient-class">Step 3.2: Create CalculatoMCPClient Class</h5>
+
+<h5 id="step-321-initiate-the-class">Step 3.2.1: Initiate the Class</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class CalculatorMCPClient:
+    """Client for the Calculator MCP Server using OpenAI GPT"""
+
+    def __init__(self):
+        self.session: Optional[ClientSession] = None
+        self.exit_stack = AsyncExitStack()
+        self.client = OpenAI()  # Uses OPENAI_API_KEY from env
+        self.tools = []
+        self.model = "gpt-4o-mini"  # Fast and capable for calculations
+</code></pre></div></div>
+
+<h5 id="step-322-create-a-connect_to_server-method">Step 3.2.2: Create a connect_to_server method</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    async def connect_to_server(self, server_script_path: str):
+        """
+        Connect to the MCP Calculator Server
+        
+        Args:
+            server_script_path: Path to calculator_server.py
+        """
+        try:
+            # Create server parameters for stdio connection
+            server_params = StdioServerParameters(
+                command="python",
+                args=[server_script_path]
+            )
+            
+            print(f"🔗 Connecting to MCP server: {server_script_path}")
+            
+            # Connect using stdio
+            read, write = await self.exit_stack.enter_async_context(
+                stdio_client(server_params)
+            )
+            
+            # Create and initialize session
+            self.session = await self.exit_stack.enter_async_context(
+                ClientSession(read, write)
+            )
+            await self.session.initialize()
+            
+            # Get available tools
+            tools_response = await self.session.list_tools()
+            self.tools = tools_response.tools
+            
+            print(f"✅ Connected successfully!")
+            print(f"📊 Available tools: {len(self.tools)}")
+            for tool in self.tools:
+                print(f"   • {tool.name}")
+            
+        except Exception as e:
+            print(f"❌ Error connecting to server: {e}")
+            raise
+</code></pre></div></div>
+
+<h5 id="step-323-create-an-internal-method-for-converting-mcp-tools-to-openai-function-calling-format">Step 3.2.3: Create an internal method for converting MCP tools to OpenAI function calling format</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    def _format_tools_for_openai(self) -&gt; list:
+        """Convert MCP tools to OpenAI function calling format"""
+        openai_tools = []
+        
+        for tool in self.tools:
+            openai_tool = {
+                "type": "function",
+                "function": {
+                    "name": tool.name,
+                    "description": tool.description,
+                    "parameters": tool.inputSchema
+                }
+            }
+            openai_tools.append(openai_tool)
+        
+        return openai_tools
+</code></pre></div></div>
+
+<h5 id="step-324-create-a-method-to-process-user-query-using-openai-gpt-and-calculator-tools">Step 3.2.4: Create a method to process user query using OpenAI GPT and calculator tools</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    async def calculate(self, user_query: str) -&gt; str:
+        """
+        Process a user's math query using OpenAI GPT and calculator tools
+        
+        Args:
+            user_query: The user's math question or request
+            
+        Returns:
+            GPT's response with the calculation result
+        """
+        if not self.session:
+            raise RuntimeError("Not connected to server. Call connect_to_server first.")
+        
+        # Prepare tools for OpenAI API
+        openai_tools = self._format_tools_for_openai()
+        
+        print(f"\n👤 You: {user_query}")
+        
+        # Initialize message history
+        messages = [{"role": "user", "content": user_query}]
+        
+        # Keep processing while GPT uses tools
+        iteration = 0
+        max_iterations = 10  # Prevent infinite loops
+        
+        while iteration &lt; max_iterations:
+            iteration += 1
+            
+            # Send message to OpenAI
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=messages,
+                tools=openai_tools if openai_tools else None,
+                temperature=0.7
+            )
+            
+            # Check if GPT wants to use a tool
+            tool_used = False
+            
+            # Process response choices
+            for choice in response.choices:
+                if choice.finish_reason == "tool_calls":
+                    tool_used = True
+                    
+                    # Add assistant's response to messages
+                    messages.append({
+                        "role": "assistant",
+                        "content": choice.message.content or "",
+                        "tool_calls": choice.message.tool_calls
+                    })
+                    
+                    # Process each tool call
+                    tool_results = []
+                    for tool_call in choice.message.tool_calls:
+                        tool_name = tool_call.function.name
+                        tool_input = eval(tool_call.function.arguments)  # Parse JSON string
+                        tool_use_id = tool_call.id
+                        
+                        print(f"   🔧 Using tool: {tool_name}")
+                        print(f"   📥 Input: {tool_input}")
+                        
+                        # Call the tool on the MCP server
+                        try:
+                            result = await self.session.call_tool(tool_name, tool_input)
+                            
+                            # Extract result text
+                            result_text = result.content[0].text if result.content else "No result"
+                            
+                            # Handle numeric results
+                            try:
+                                result_value = float(result_text)
+                                print(f"   📤 Result: {result_value}")
+                            except (ValueError, TypeError):
+                                print(f"   📤 Result: {result_text}")
+                            
+                            tool_results.append({
+                                "tool_call_id": tool_use_id,
+                                "result": result_text
+                            })
+                            
+                        except Exception as e:
+                            error_msg = f"Error: {str(e)}"
+                            print(f"   ❌ {error_msg}")
+                            tool_results.append({
+                                "tool_call_id": tool_use_id,
+                                "result": error_msg
+                            })
+                    
+                    # Add all tool results to messages
+                    for tool_result in tool_results:
+                        messages.append({
+                            "role": "tool",
+                            "tool_call_id": tool_result["tool_call_id"],
+                            "content": tool_result["result"]
+                        })
+                
+                elif choice.finish_reason == "stop":
+                    # GPT finished and didn't use tools
+                    final_response = choice.message.content or "No response"
+                    print(f"\n🤖 OpenAI: {final_response}")
+                    return final_response
+            
+            # If tool was used, continue the loop to get GPT's next response
+            if not tool_used:
+                break
+        
+        return "Max iterations reached"
+</code></pre></div></div>
+
+<h5 id="step-325-create-a-method-to-run-in-interactive-mode-for-a-user-to-ask-math-questions">Step 3.2.5: Create a method to run in interactive mode for a user to ask math questions</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    async def interactive_mode(self):
+        """
+        Run an interactive loop where a user can ask math questions
+        """
+        print("\n" + "=" * 60)
+        print("💬 Calculator Chat with OpenAI (Interactive Mode)")
+        print("=" * 60)
+        print("\nTry asking things like:")
+        print("  • What is 25 times 4?")
+        print("  • Calculate the square root of 144")
+        print("  • What's 100 divided by 4?")
+        print("  • What is 2 to the power of 10?")
+        print("\nType 'quit' or 'exit' to stop\n")
+        
+        while True:
+            try:
+                user_input = input("Enter a math question: ").strip()
+                
+                if user_input.lower() in ['quit', 'exit']:
+                    print("👋 Goodbye!")
+                    break
+                
+                if not user_input:
+                    continue
+                
+                await self.calculate(user_input)
+                
+            except KeyboardInterrupt:
+                print("\n👋 Goodbye!")
+                break
+            except Exception as e:
+                print(f"Error: {e}")
+
+    async def cleanup(self):
+        """Clean up resources"""
+        await self.exit_stack.aclose()
+</code></pre></div></div>
+
+<h5 id="step-33-define-main-method">Step 3.3: Define main method</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>async def main():
+    """Main entry point"""
+    
+    # Check if server path was provided
+    if len(sys.argv) &lt; 2:
+        print("Usage: python calculator_client_openai.py &lt;path_to_calculator_server.py&gt;")
+        print("\nExample:")
+        print("  python calculator_client_openai.py ./calculator_server.py")
+        print("\nMake sure calculator_server.py is running in a separate terminal:")
+        print("  python calculator_server.py")
+        print("\nAlso ensure OPENAI_API_KEY is set in .env or environment")
+        sys.exit(1)
+    
+    server_path = sys.argv[1]
+    client = CalculatorMCPClient()
+    
+    try:
+        print("=" * 60)
+        print("🧮 Calculator MCP App with OpenAI")
+        print("=" * 60)
+        print(f"Model: {client.model}")
+        
+        # Connect to server
+        await client.connect_to_server(server_path)
+        
+        # Run interactive mode
+        await client.interactive_mode()
+        
+    except Exception as e:
+        print(f"❌ Error: {e}")
+        import traceback
+        traceback.print_exc()
+    finally:
+        await client.cleanup()
+</code></pre></div></div>
+
+<h5 id="step-34-run-the-calculator-tool">Step 3.4: Run the Calculator Tool</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if __name__ == "__main__":
+    asyncio.run(main())
+</code></pre></div></div>
+
+<h2 id="calculator-app-with-mcp-server-in-action">Calculator App with MCP Server in Action</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% python Calculator_MCP_Client.py                           
+Usage: python calculator_client_openai.py &lt;path_to_calculator_server.py&gt;
+
+Example:
+  python calculator_client_openai.py ./calculator_server.py
+
+Make sure calculator_server.py is running in a separate terminal:
+  python calculator_server.py
+
+Also ensure OPENAI_API_KEY is set in the .env or environment
+
+% python Calculator_MCP_Client.py ./Calculator_MCP_Server.py
+============================================================
+🧮 Calculator MCP App with OpenAI
+============================================================
+Model: gpt-4o-mini
+🔗 Connecting to MCP server: ./Calculator_MCP_Server.py
+[06/04/26 23:49:31] INFO     Processing request of type ListToolsRequest                                                                                                 
+✅ Connected successfully!
+📊 Available tools: 6
+   • add
+   • subtract
+   • multiply
+   • divide
+   • power
+   • square_root
+
+============================================================
+💬 Calculator Chat with OpenAI (Interactive Mode)
+============================================================
+
+Try asking things like:
+  • What is 25 times 4?
+  • Calculate the square root of 144
+  • What's 100 divided by 4?
+  • Multiply 7 by 8, then add 15
+  • What is 2 to the power of 10?
+
+Type 'quit' or 'exit' to stop
+
+Enter a math question: what is 25/5?
+
+👤 You: what is 25/5?
+   🔧 Using tool: divide
+   📥 Input: {'a': 25, 'b': 5}
+[06/04/26 23:50:09] INFO     Processing request of type CallToolRequest                                                                                                       server.py:727
+   📤 Result: 5.0
+
+🤖 OpenAI: The result of \( 25 \div 5 \) is \( 5.0 \).
+Enter a math question: 
+</code></pre></div></div>
+
+<h2 id="brief-note-on-fastmcp">Brief note on FastMCP</h2>
+
+<p>FastMCP is a Python library that enables creation of MCP servers fast. It is simple and easy to get started.</p>
+
+<h5 id="getting-started">Getting Started</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pip install fastmcp
+</code></pre></div></div>
+
+<h5 id="simple-mcp-server">Simple MCP Server</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from fastmcp import FastMCP
+
+mcp = FastMCP("my-server")
+
+@mcp.tool()
+def add(a: int, b: int) -&gt; int: #type hints
+    """Add two numbers.""" #docstring 
+    return a + b
+
+if __name__ == "__main__":
+    mcp.run()
+</code></pre></div></div>
+
+<p>That’s it. Just save and run the above code, and you’ll have a functioning MCP server that can be integrated with your AI application.</p>
+
+<h2 id="mcp-security-guide-for-public-servers">MCP Security Guide for Public Servers</h2>
+<p>Discussing security of MCP servers in detail will require a separate post. In this section let us understand the precautions to be taken when using public MCP servers. First let us distinguish between Local and Public MCP Severs:  </p>
+
+<h4 id="public-mcp-servers">Public MCP Servers</h4>
+<ul>
+  <li>Hosted on the internet and accessible remotely</li>
+  <li>Can be developed by companies, individuals, or open-source communities</li>
+  <li>You access them via a public URL (e.g., https://mcp.example.com/sse)</li>
+  <li>Examples: Gmail MCP, Google Drive MCP, Asana MCP, etc.</li>
+  <li>May or may not require authentication (API keys, OAuth, etc.)</li>
+</ul>
+
+<h4 id="local-mcp-servers">Local MCP Servers</h4>
+<ul>
+  <li>Run on your local machine or internal network</li>
+  <li>You typically access them via localhost or an internal IP address</li>
+  <li>Useful for testing, development, or keeping sensitive tools private</li>
+  <li>Can be built using MCP SDKs and run in your environment</li>
+  <li>Examples: A custom MCP server you build for proprietary data, or a local instance of an open-source MCP server</li>
+</ul>
+
+<p>Generally, Official MCP servers like GitHub, Slack can be trusted, one can also trust Open-source MCP Servers with community reviews, have HTTPS+OAuth+Privacy policy and is actively maintained. It is best to avoid MCP servers with unknown authors, HTTP only, authenticate with raw API tokens and has no documentation or privacy policy.</p>
+
+<p>As a general thumb rule before connecting to ANY public MCP server ensure that:</p>
+<ul>
+  <li>It is from a trusted source</li>
+  <li>It is actively maintained</li>
+  <li>It has proper secure authorization (Like OAuth)</li>
+  <li>The remote URL should be HTTPS only</li>
+  <li>The access can be revoked easily</li>
+  <li>It has permission to access only what is needed</li>
+</ul>
+
+<h2 id="conclusion">Conclusion</h2>
+<p>In this post, MCP basics are explained with a very simple example. In terms of practical implementation there is more to be explored and understood especially security in MCP. In future posts regarding MCP we will explore with implemention the different MCP types - tools, resources and prompts, how to make it secure and in general about the precautions to be taken when using public MCP servers.</p>
+
+<h2 id="references">References</h2>
+<ul>
+  <li>https://www.anthropic.com/news/model-context-protocol</li>
+  <li>https://en.wikipedia.org/wiki/Model_Context_Protocol</li>
+  <li>https://newsletter.pragmaticengineer.com/p/mcp</li>
+</ul>
+
+<h4 id="appendix-a-brief-note-on-asyncio">Appendix A: Brief note on asyncio</h4>
+
+<p>Asyncio is a handy module which helps run tasks concurrently and not in parallel with the help of async and await syntax. The main building blocks of asyncio is:</p>
+<ul>
+  <li>Coroutines: A function that is defined as “async def”. The speciality of this function is that it is not executed immediately when called instead they return a coroutine object that can be paused and resumed.</li>
+  <li>Event Loop: This is the central piece of the building block acting as the “orchestrator” of the program. It registers all the tasks and is responsible to pause active task and execute next task whenever a task needs to wait for input and output(I/O)</li>
+  <li>Await Keyword: This keyword pauses the execution of a coroutine when the coroutine is waiting for I/O by yielding control back to the event loop, allowing other tasks to run until the awaited operation finishes.</li>
+  <li>Tasks: It is a wrapper used to schedule a coroutine on the event loop concurrently by using asyncio.create_task(<async def="" method="">) . They allow multiple coroutines to run at the same time</async></li>
+</ul>
+
+<h4 id="example-code">Example code</h4>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import asyncio
+
+async def fetch_score(subject_id, delay):
+    print(f"Task {subject_id}: Starting fetch...")
+    # Simulate a network request (non-blocking pause)
+    await asyncio.sleep(delay)  
+    print(f"Task {subject_id}: Data received!")
+    return f"Result {subject_id}"
+
+async def main():
+    # Schedule both tasks to run concurrently
+    task1 = asyncio.create_task(fetch_score(1, 2))
+    task2 = asyncio.create_task(fetch_score(2, 1))
+    
+    # Wait for both tasks to finish
+    await task1
+    await task2
+
+# Start the event loop and run the main entry point
+asyncio.run(main())
+</code></pre></div></div>
+<h3 id="comparing-asyncio-vs-threading-vs-multiprocessing">Comparing asyncio vs threading vs multiprocessing</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Dimension</th>
+      <th>asyncio</th>
+      <th>threading</th>
+      <th>multiprocessing</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Model</td>
+      <td>Cooperative concurrency</td>
+      <td>Preemptive concurrency</td>
+      <td>True parallelism</td>
+    </tr>
+    <tr>
+      <td>Execution</td>
+      <td>Single thread(event loop)</td>
+      <td>Multiple threads (one process)</td>
+      <td>Multiple processes</td>
+    </tr>
+    <tr>
+      <td>Memory</td>
+      <td>Shared</td>
+      <td>Shared</td>
+      <td>Separate</td>
+    </tr>
+    <tr>
+      <td>Switching</td>
+      <td>Use yield control(await)</td>
+      <td>OS decides/controls</td>
+      <td>OS decides/controls</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The above table gives you a mental map to understand and differentiate between asyncio, threading and multiprocessing. There is more to explore and learn and understand around the topic of threading and multiprocessing, but for now let’s understand when each can be used:
+Start with this question: Is the task I am handling CPU-bound? Like a task which is doing heavy mathematical computations or algorithmic calculations.
+If your answer is “Yes” then “multiprocessing” is the model to chose. Let’s say your answer is “No” and your task is I/O-bound (like disk-reads, network requests etc.,) then you are left with the choice of either “async” or “threading”. The choice here is simple, if your task can use async libraries then “asyncio” should be preferred in your code. In situations wherein your task is using synchronous/blocking/legacy libraries then you’ll have to choose “threading”.</p>]]></content><author><name>Sathyendhra</name></author><category term="Technical" /><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">FastAPI Tutorial: Architecture, Core Concepts, and a CRUD API Example</title><link href="http://localhost:4000/technical/2026/02/18/fastapi.html" rel="alternate" type="text/html" title="FastAPI Tutorial: Architecture, Core Concepts, and a CRUD API Example" /><published>2026-02-18T00:00:00+05:30</published><updated>2026-02-18T00:00:00+05:30</updated><id>http://localhost:4000/technical/2026/02/18/fastapi</id><content type="html" xml:base="http://localhost:4000/technical/2026/02/18/fastapi.html"><![CDATA[<p><img src="/assets/images/fastapi/fastapi_blog_header_3.svg" alt="fastAPI_Architecture" /></p>
+
+<h2 id="introduction">Introduction</h2>
+<p>I’ve been hearing a lot about a Python web framework called FastAPI. The purpose of this post is to understand the basics of FastAPI by exploring:</p>
+
+<ul>
+  <li>What is FastAPI?</li>
+  <li>When to use it?</li>
+  <li>When not to use it?</li>
+  <li>FastAPI vs DRF</li>
+  <li>FastAPI Architecture</li>
+  <li>FastAPI Core Components</li>
+  <li>How to get started with a simple project</li>
+</ul>
+
+<h4 id="what-is-fastapi">What is FastAPI?</h4>
+<p>FastAPI is a Python web framework for building APIs. Decorators (like @app.get(“/end_point”) are used to define endpoints, it uses Python type hints to automatically validate incoming data, convert types and generate interactive API documentation (at /docs) out of the box.</p>
+
+<p>It is built on Starlette (for the web layer) and Pydantic (for data validation)</p>
+
+<h4 id="what-is-starlette">What is Starlette?</h4>
+<p>Starlette is a lightweight python web framework built on ASGI (Asynchronous Server Gateway Interface) which is sucessor to WSGI (Web Server Gateway Interface). FastAPI is built on top of Starlette by adding automatic data validation, serialization and API docs to it.</p>
+
+<h4 id="what-is-pydantic">What is Pydantic?</h4>
+<p>Pydantic is a python library for data validation using type hints. Let me elaborate with an illustration for better understanding.</p>
+
+<h4 id="pydantic-model-example">Pydantic model example</h4>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from pydantic import BaseModel
+
+class Customer(BaseModel):
+    name: str
+    age: int
+    email: str
+
+user = Customer(name="Alice", age=25, email="alice@example.com")  # works
+user = Customer(name="Alice", age="not a number", email="...")    # validation error
+</code></pre></div></div>
+
+<p>The above class takes 3 parameters as input name as string, age an integer, and email as string. If the user passes an invalid  data type like e.g., age=”not a number” it will throw a validation error as it is expecting an integer. However, Pydantic does “type coercion”. Let us consider the user passes age=”45”, the expectation is to throw a validation error as the input is a “string” and expected type is “int” but in reality due to the intervention of “type coercion” the string is automatically converted to integer and the execution continues.</p>
+
+<p>FastAPI uses Pydantic under the hood so that when a request comes in, the JSON body is automatically parsed and validated against your model before your function even runs.</p>
+
+<h3 id="when-to-choose-fastapi">When to choose FastAPI?</h3>
+<p>One should use FastAPI if speed, validation and clean code take precedence. The best use cases would be:</p>
+<ul>
+  <li>Building highly performant REST APIs</li>
+  <li>ML/AI services</li>
+  <li>Auto-generated documentation matters</li>
+  <li>Rapid prototyping</li>
+</ul>
+
+<h3 id="when-not-to-choose-fastapi">When not to choose FastAPI?</h3>
+<p>If your ecosystem is already using a robust framework (like Django for example) it is not advisable to switch to FastAPI unless you have a niche requirement to do so. Some factors to help make the decision are listed below:</p>
+<ul>
+  <li>Avoid FastAPI if your application involves CPU-Intensive tasks (image processing,video encoding etc). You can workaround it but it is not possible out of the box.</li>
+  <li>If you need one web framework with Full Stack needs then FastAPI is not the right fit.</li>
+  <li>Asynchronous programming comes with a little bit of learning curve, if the team has less experience in asynchronous programming and do not have the luxury of investing time to learn it then it is advisable not to use FastAPI.</li>
+  <li>If your project does not support async or does not have the need of async then it is best to avoid FastAPI. Without async you will lose the primary performance benefit of FastAPI. You can still use FastAPI without async but there are other frameworks better suited for the use case.</li>
+</ul>
+
+<h3 id="fastapi-vs-drf">FastAPI vs DRF</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Feature</th>
+      <th>FastAPI</th>
+      <th>DRF</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Based on</td>
+      <td>Starlette+Pydantic</td>
+      <td>Django</td>
+    </tr>
+    <tr>
+      <td>Performance</td>
+      <td>Very fast</td>
+      <td>Slower</td>
+    </tr>
+    <tr>
+      <td>Object Relational Mapping</td>
+      <td>Not built-in</td>
+      <td>Django ORM (built-in and powerful)</td>
+    </tr>
+    <tr>
+      <td>Admin Panel</td>
+      <td>No</td>
+      <td>Yes (Django admin)</td>
+    </tr>
+    <tr>
+      <td>Authentication &amp; Permissions</td>
+      <td>Basic</td>
+      <td>Rich &amp; built-in)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="core-components">Core Components</h2>
+
+<p><img src="/assets/images/fastapi/fastapi-architecture.png" alt="fastAPI_Architecture" /></p>
+
+<ul>
+  <li>
+    <p>ASGI Server (Uvicorn)
+The server that runs the FastAPI app. It receives HTTP requests from clients and sends responses back. Built on uvloop (a fast async event loop) and httptools (a fast HTTP parser)</p>
+  </li>
+  <li>
+    <p>Starlette
+FastAPI directly subclasses Starlette, inheriting all its capabilities. It handles the routing, middleware, request/response objects, websockets and static files.</p>
+  </li>
+  <li>
+    <p>Pydantic
+This component is responsible for data validation. It powers all input validation and output serialization. Once you define a BaseModel using Python type hints, FastAPI enforces it automatically — no extra code needed for it.</p>
+  </li>
+  <li>
+    <p>OpenAPI &amp; Auto Docs
+FastAPI auto-generates an OpenAPI schema from your code. Two interactive docs UIs are available out of the box — Swagger UI at /docs and ReDoc at /redoc - without any extra setup</p>
+  </li>
+  <li>
+    <p>Dependency Injection (DI) System
+A clean system to share reusable logic across routes — database connections, authentication, configuration. FastAPI resolves dependencies automatically before calling your handler.</p>
+
+    <h4 id="dependency-injection-example">Dependency Injection example?</h4>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from fastapi import FastAPI, Depends
+
+app = FastAPI()
+
+# --- Dependency function ---
+def get_db():
+  db = connect_to_database()
+  try:
+      yield db        # provides the db to the route
+  finally:
+      db.close()      # runs after the route finishes
+
+# --- Route using the dependency ---
+@app.get("/items")
+def read_items(db = **Depends**(get_db)):
+  return db.query("SELECT * FROM items")
+</code></pre></div>    </div>
+    <p>Steps:</p>
+    <ol>
+      <li>Define a dependency function (for e.g., def get_db which returns a database handle)</li>
+      <li>Call the dependency function name in the route using “Depends” (Depends(get_db)</li>
+    </ol>
+
+    <h4 id="dependency-injection-vs-direct-call">Dependency Injection vs Direct Call</h4>
+
+    <p>Looking at the above example, one may argue that one can use the direct call of the method (e.g., get_db()) why use dependency injection? On
+the surface, it looks similar but it does more than a direct call. Below are some points that make it different:</p>
+    <ol>
+      <li>LifeCycle Management
+With a direct call, you have to manage setup and teardown yourself:
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python# Direct — you manage everything
+@app.get("/items")
+def read_items():
+   db = get_db()
+   try:
+       result = db.query(...)
+       return result
+   finally:
+       db.close()   # easy to forget!
+</code></pre></div>        </div>
+        <p>With Depends(), the dependency handles it:</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>def get_db():
+   db = connect()
+   try:
+       yield db
+   finally:
+       db.close()   # always runs, even on errors
+
+@app.get("/items")
+def read_items(db = Depends(get_db)):
+   return db.query(...)   # clean, nothing to manage
+</code></pre></div>        </div>
+      </li>
+      <li>
+        <p>Caching within a request
+If multiple routes need the same method, Depends() calls it only once per request and reuses the result but with direct call the method is called multiple times within the same request.</p>
+      </li>
+      <li>Automatic parameter injection
+Dependencies can read query params, headers, and path params directly from the request — without you passing anything but with a direct call, you’d have to extract the header manually in every route.</li>
+    </ol>
+  </li>
+  <li>
+    <p>Middleware
+Functions that run on every request before it reaches your route handler, and on every response before it goes back to the client. Common uses: CORS, logging, authentication, GZip compression.</p>
+  </li>
+</ul>
+
+<h2 id="fast-api-workflow">Fast API Workflow</h2>
+
+<p><img src="/assets/images/fastapi/fastapi-workflow.png" alt="fastAPI_Workflow" style="width: 50%; height: auto;" /></p>
+
+<h2 id="getting-started">Getting Started</h2>
+
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+  <li>Python 3.10 or higher</li>
+</ul>
+
+<h3 id="problem-statement">Problem Statement</h3>
+<p>Develop APIs for a book store. The API should be able to list all books in stock, add a new book to the bookstore inventory, update a book entry and delete a book entry</p>
+
+<p>Check out the source code on <a href="https://github.com/rsathyendhra/sample-fastapi">GitHub-FastAPI-Sample</a>.</p>
+
+<h5 id="1-install-fastapi-module">1. Install fastapi module</h5>
+<p>pip install fastapi uvicorn</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> % pip install fastapi uvicorn
+Collecting fastapi
+  Downloading fastapi-0.135.1-py3-none-any.whl.metadata (30 kB)
+Collecting uvicorn
+  Downloading uvicorn-0.41.0-py3-none-any.whl.metadata (6.7 kB)
+....
+.....
+Successfully installed annotated-doc-0.0.4 annotated-types-0.7.0 anyio-4.12.1 click-8.3.1 fastapi-0.135.1 h11-0.16.0 idna-3.11 pydantic-2.12.5 pydantic-core-2.41.5 starlette-0.52.1 typing-extensions-4.15.0 typing-inspection-0.4.2 uvicorn-0.41.0
+</code></pre></div></div>
+
+<h5 id="2-import-libraries-and-create-fastapi-object">2. Import libraries and create FastAPI object</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import Optional
+
+app = FastAPI()
+</code></pre></div></div>
+
+<h5 id="3-define-schema">3. Define schema</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Input schema — what the client sends
+class Book(BaseModel):
+    name: str
+    price: float
+    in_stock: bool = True
+
+# Update schema — all fields optional for partial updates
+class BookUpdate(BaseModel):
+    name: Optional[str] = None
+    price: Optional[float] = None
+    in_stock: Optional[bool] = None
+
+# Output schema — what the API returns
+class BookOut(BaseModel):
+    id: int
+    name: str
+    price: float
+    in_stock: bool
+</code></pre></div></div>
+<h5 id="4-fastapi-crud">4. FastAPI CRUD</h5>
+
+<h6 id="41-create---post">4.1. Create - POST</h6>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>db = {}   # fake in-memory database
+counter = 0
+
+@app.post("/books", response_model=BookOut, status_code=201)
+def create_item(item: Book):
+    global counter
+    counter += 1
+    db[counter] = {"id": counter, **item.model_dump()}
+    return db[counter]
+</code></pre></div></div>
+<p>Note: The in-memory database is not recommended for production.</p>
+
+<h6 id="42-read---get">4.2. Read - GET</h6>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Read all
+@app.get("/books", response_model=list[BookOut])
+def list_items(skip: int = 0, limit: int = 10):
+    return list(db.values())[skip: skip + limit]
+
+# Read one
+@app.get("/books/{item_id}", response_model=BookOut)
+def get_item(item_id: int):
+    if item_id not in db:
+        raise HTTPException(status_code=404, detail="Book not found")
+    return db[item_id]
+</code></pre></div></div>
+
+<h6 id="43-update---putpatch">4.3. Update - PUT/PATCH</h6>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># PUT — full update, replaces the entire record
+@app.put("/books/{item_id}", response_model=BookOut)
+def update_item(item_id: int, item: Book):
+    if item_id not in db:
+        raise HTTPException(status_code=404, detail="Book not found")
+    db[item_id] = {"id": item_id, **item.model_dump()}
+    return db[item_id]
+
+# PATCH — partial update, only changes fields you send
+@app.patch("/books/{item_id}", response_model=BookOut)
+def partial_update_item(item_id: int, item: BookUpdate):
+    if item_id not in db:
+        raise HTTPException(status_code=404, detail="Item not found")
+    stored = db[item_id]
+    updates = model_dump(exclude_unset=True)
+    stored.update(updates)
+    db[item_id] = stored
+    return db[item_id]
+</code></pre></div></div>
+
+<h6 id="44-delete---delete">4.4. Delete - DELETE</h6>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@app.delete("/books/{item_id}", status_code=204)
+def delete_item(item_id: int):
+    if item_id not in db:
+        raise HTTPException(status_code=404, detail="Book not found")
+    del db[item_id]
+</code></pre></div></div>
+
+<h5 id="5-add-steps-2-to-4-in-mainpy-and-run-below-command">5. Add steps 2 to 4 in main.py and run below command:</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% uvicorn main:app --reload
+INFO:     Will watch for changes in these directories: ['/Users/sathyendhra/django_project3/fastapi-project']
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [29028] using StatReload
+INFO:     Started server process [29030]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+</code></pre></div></div>
+
+<h5 id="9-open-http1270018000docs-in-the-browser">9. Open “http://127.0.0.1:8000/docs” in the browser</h5>
+
+<p><img src="/assets/images/fastapi/fastapi_homepage.png" alt="fastAPI_Homepage" /></p>
+
+<h5 id="10-create-a-book-item-using-fastapi---swagger-ui">10. Create a book item using FastAPI - Swagger UI</h5>
+
+<p><img src="/assets/images/fastapi/fastapi_post_request.png" alt="fastAPI_Post Request" /></p>
+
+<p><img src="/assets/images/fastapi/fastapi_post_response.png" alt="fastAPI_Post Response" /></p>
+
+<h5 id="11-list-all-books-in-the-book-store-using-fastapi---swagger-ui">11. List all books in the book store using FastAPI - Swagger UI</h5>
+
+<p><img src="/assets/images/fastapi/fastapi_get_request_response.png" alt="fastAPI_get request response" /></p>
+
+<h5 id="12-update-availability-of-a-book-in-the-book-store">12. Update availability of a book in the book store</h5>
+
+<p><img src="/assets/images/fastapi/fastapi_patch_request.png" alt="fastAPI_patch request" /></p>
+
+<p><img src="/assets/images/fastapi/fastapi_patch_response.png" alt="fastAPI_patch response" /></p>
+
+<h5 id="13-delete-a-book-from-the-book-store">13. Delete a book from the book store</h5>
+
+<p><img src="/assets/images/fastapi/fastapi_delete_request_response.png" alt="fastAPI_delete request response" /></p>
+
+<h5 id="14-list-all-books-in-the-book-store-after-update-and-delete-operations">14. List all books in the book store after update and delete operations</h5>
+
+<p><img src="/assets/images/fastapi/fastapi_request_response_get_final.png" alt="fastAPI_get final response" /></p>
+
+<h2 id="understanding-decorators-in-python--optional-section-for-people-well-versed-with-this-python-feature">Understanding Decorators in python ( optional section for people well versed with this python feature)</h2>
+<p>As FastAPI uses decorators heavily, let’s understand this elegant Python feature. Basically, a decorator is a function that wraps another function to add behaviour before or after it runs without modifying the existing function.</p>
+
+<p>Think of a decorator as a notebook cover — the notebook (your function) stays the same, the cover adds something around it.</p>
+
+<p>Let us understand this with examples:</p>
+
+<ul>
+  <li>Without decorator</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>def my_decorator(func):
+    def wrapper():
+        print("Before")
+        func()          # call the original function
+        print("After")
+    return wrapper
+
+def greet():
+    print("Hello!")
+
+# manually wrap it
+greet = my_decorator(greet)
+greet()
+
+# Output:
+# Before
+# Hello!
+# After
+</code></pre></div></div>
+
+<ul>
+  <li>With decorator</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>def my_decorator(func):
+    def wrapper():
+        print("Before")
+        func()
+        print("After")
+    return wrapper
+
+@my_decorator       # same as: greet = my_decorator(greet)
+def greet():
+    print("Hello!")
+
+greet()
+
+# Output:
+# Before
+# Hello!
+# After
+</code></pre></div></div>
+
+<ul>
+  <li>Decorator with arguments</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>def repeat(times):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            for _ in range(times):
+                func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+@repeat(times=3)
+def greet():
+    print("Hello!")
+
+greet()
+# Hello!
+# Hello!
+# Hello!
+</code></pre></div></div>
+
+<h2 id="conclusion">Conclusion</h2>
+<p>In this post we have explored the basics of FastAPI, equipping you to start building projects using this web framework. As next step one can learn about integrating FastAPI with SQLAlchemy, a powerful combination for building database-backed APIs and also explore writing automated tests for your API using FastAPI’s TestClient tool.</p>
+
+<h2 id="references">References</h2>
+<ol>
+  <li>https://fastapi.tiangolo.com/</li>
+  <li>https://docs.pydantic.dev</li>
+  <li>https://www.uvicorn.org</li>
+  <li>https://www.starlette.io</li>
+  <li>https://docs.python.org/3/glossary.html#term-decorator</li>
+  <li>https://github.com/zhanymkanov/fastapi-best-practices?tab=readme-ov-file#cpu-intensive-tasks</li>
+</ol>]]></content><author><name>Sathyendhra</name></author><category term="Technical" /><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">Understanding REST</title><link href="http://localhost:4000/technical/2026/01/07/rest.html" rel="alternate" type="text/html" title="Understanding REST" /><published>2026-01-07T00:00:00+05:30</published><updated>2026-01-07T00:00:00+05:30</updated><id>http://localhost:4000/technical/2026/01/07/rest</id><content type="html" xml:base="http://localhost:4000/technical/2026/01/07/rest.html"><![CDATA[<p><img src="/assets/images/rest_api_blog_header.svg" alt="cover" /></p>
+
+<h2 id="introduction">Introduction</h2>
+<p>In this post, the focus is on understanding the basics of REST and building a sample  REST API using DRF (Django REST Framework). Now let’s get started in absorbing the concept of REST.</p>
+
+<h2 id="what-is-rest">What is REST?</h2>
+<p>REST powers over 80% of public APIs today. Let me start off by saying REST is an acronym which when expanded reads “REpresentational State Transfer”. It is called an architectural style as it provides a set of design principles and constraints that guide the creation of web services systems. Basically REST helps in building web services that help in communicating between different software applications.</p>
+
+<p>Now that I have explained (at least on a high level) about what is REST, now it’s time to understand why REST?</p>
+
+<h2 id="why-rest">Why REST?</h2>
+<p>REST API is used primarily because of its simplicity. Ease of use is the main reason for its adoption in the world. The methods like GET, POST, PATCH, PUT make it convenient to use it.</p>
+
+<h2 id="how-rest">How REST?</h2>
+<p>As REST is an architectural style, it is implemented with the below constraints or  guidelines,</p>
+
+<ul>
+  <li>stateless</li>
+  <li>cacheable</li>
+  <li>uniform interface</li>
+  <li>client server</li>
+  <li>layered system</li>
+  <li>code on demand</li>
+</ul>
+
+<p>Let me elaborate on the above constraints:</p>
+
+<h3 id="client-server">Client Server</h3>
+<p>REST API follows client server architecture where client acts as the trigger system and server services the request from client with a response.</p>
+
+<h3 id="stateless">Stateless</h3>
+<p>The term stateless is that the server does not hold the state of the request, the client is responsible in keeping the entire state of the session.</p>
+
+<h3 id="cacheable">Cacheable</h3>
+<p>Due to stateless constraint efficiency takes a hit, to overcome this and improve the efficiency  client side caching is allowed. This comes with the advantage of improving the efficiency but also the disadvantage of not getting the latest data from the server.</p>
+
+<h3 id="uniform-interface">Uniform Interface</h3>
+<p>Standard HTTP methods like GET, POST, PUT, PATCH, DELETE etc. + URI (uniform resource identifiers) are used by REST API which is a uniform interface for communicating between client and server</p>
+
+<h3 id="layered-component">Layered Component</h3>
+<p>In layered component architecture each component cannot see beyond the immediate layer it is interacting.</p>
+
+<h3 id="code-on-demand">Code on demand</h3>
+<p>REST  provides client with the capability to execute code in the form of script or applets.</p>
+
+<h2 id="what-is-idempotency-in-rest">What is idempotency in REST?</h2>
+<p>When talking about REST one must mention about “Idempotency” . In context of REST, idempotency is a property where making multiple identical requests has the same effect on the server’s state as making a single request.</p>
+
+<h2 id="rest-methods">REST Methods</h2>
+<p>The most common REST methods are listed and described below:</p>
+<ul>
+  <li>GET - Retrieves data (or representation of a resource) from server.</li>
+  <li>POST - Push/submit data to the server to create a new resource or trigger an action(side effect). This method is not idempotent and same back to back post requests results in two new POST requests to server.</li>
+  <li>PUT - Updates existing resources with submitted data. It is idempotent. If the resource does not exist then it can create a new resource(the behaviour is dependent on the API design)</li>
+  <li>PATCH - This method is used to partially modify data of existing resource unlike PUT where the whole data is modified, it is generally not considered safe as it has the ability to change server state and it is not idempotent by default.</li>
+  <li>DELETE - Removes/deletes a specific resource from server.</li>
+  <li>OPTIONS - Fetches the communication options(like methods supported) for a resource/end point.</li>
+  <li>HEAD - Retrieves only headers and not the body. It can be used as a check of existence of a resource without transferring the entire data.</li>
+</ul>
+
+<h2 id="what-is-cors-in-rest">What is CORS in REST?</h2>
+<p>CORS is an acronym for ‘Cross Origin for Resource Sharing’. It is a feature in which one domain can access data/resources from different domain. CORS should be enabled in REST API to avoid the default block  by same-Origin policy.</p>
+
+<h2 id="when-to-use">When to use</h2>
+<ul>
+  <li>Third party integrations to your website - for e.g., a payment processors, link social media platforms or link mapping services</li>
+  <li>IoT devices - Helps IoT devices to communicate with cloud platforms &amp; systems with minimum bandwidth.</li>
+  <li>Cloud Computing &amp; Microservices</li>
+  <li>Public facing API - REST API is best to expose API which is widely consumed by developers using various programming languages and applications.</li>
+  <li>Good for managing data operations on server (CRUD operations)</li>
+</ul>
+
+<h2 id="when-not-to-use-rest-api">When not to use REST API?</h2>
+<ul>
+  <li>Simple traditional website - for e.g., a text based website querying static data from database.</li>
+  <li>High performance and low latency applications - The stateless nature of REST might hinder performance.</li>
+  <li>Specialised internal only microservices - An internal system where client and server is controlled by the same team the strict constraints of REST are unnecessary.</li>
+  <li>Security - REST APIs don’t have built-in security. The developers must manually implement robust security measures increasing the risk of misconfigurations and vulnerabilities if not handled by experts. Built-in security is found in older protocols like SOAP.</li>
+</ul>
+
+<h2 id="rest-in-action-using-drf">REST in action using DRF</h2>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+  <li>Python (v3.13 used in this tutorial)</li>
+  <li>Django module installed</li>
+</ul>
+
+<p>Now let us build our own REST API using DRF which will solve the below problem statement.</p>
+<h3 id="problem-statement">Problem Statement</h3>
+<p>Develop REST API using DRF for inventory of a bakery. The API should be able to list all items, create a new item, update an item and delete an item.</p>
+<h3 id="steps">Steps</h3>
+<h5 id="1-install-django-and-django-rest-framework-python-modules">1. Install django and django rest framework python modules</h5>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>%pip3 install django djangorestframework
+Collecting django
+  Downloading django-6.0.1-py3-none-any.whl.metadata (3.9 kB)
+Collecting djangorestframework
+  Downloading djangorestframework-3.16.1-py3-none-any.whl.metadata (11 kB)
+Collecting asgiref&gt;=3.9.1 (from django)
+  Downloading asgiref-3.11.0-py3-none-any.whl.metadata (9.3 kB)
+Collecting sqlparse&gt;=0.5.0 (from django)
+  Downloading sqlparse-0.5.5-py3-none-any.whl.metadata (4.7 kB)
+Downloading django-6.0.1-py3-none-any.whl (8.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.3/8.3 MB 40.0 MB/s eta 0:00:00
+Downloading djangorestframework-3.16.1-py3-none-any.whl (1.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.1/1.1 MB 39.4 MB/s eta 0:00:00
+Downloading asgiref-3.11.0-py3-none-any.whl (24 kB)
+Downloading sqlparse-0.5.5-py3-none-any.whl (46 kB)
+Installing collected packages: sqlparse, asgiref, django, djangorestframework
+Successfully installed asgiref-3.11.0 django-6.0.1 djangorestframework-3.16.1 sqlparse-0.5.5
+</code></pre></div></div>
+<h5 id="2-start-project-and-app-using-django---this-creates-the-folder-structure-for-us-to-get-started">2. Start project and app using django - this creates the folder structure for us to get started</h5>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[]% django-admin startproject tastybites .
+[]% ls
+manage.py	tastybites
+[]% cd tastybites
+[tastybites] % ls
+__init__.py	asgi.py		settings.py	urls.py		wsgi.py
+[tastybites] % cd ..
+[] % django-admin startapp biscuits
+[] % django-admin startapp cakes
+</code></pre></div></div>
+<h5 id="3-sync-db">3. Sync DB</h5>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[]%python manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, sessions
+Running migrations:
+  Applying contenttypes.0001_initial... OK
+  Applying auth.0001_initial... OK
+  Applying admin.0001_initial... OK
+  Applying admin.0002_logentry_remove_auto_add... OK
+  Applying admin.0003_logentry_add_action_flag_choices... OK
+  Applying contenttypes.0002_remove_content_type_name... OK
+  Applying auth.0002_alter_permission_name_max_length... OK
+  Applying auth.0003_alter_user_email_max_length... OK
+  Applying auth.0004_alter_user_username_opts... OK
+  Applying auth.0005_alter_user_last_login_null... OK
+  Applying auth.0006_require_contenttypes_0002... OK
+  Applying auth.0007_alter_validators_add_error_messages... OK
+  Applying auth.0008_alter_user_username_max_length... OK
+  Applying auth.0009_alter_user_last_name_max_length... OK
+  Applying auth.0010_alter_group_name_max_length... OK
+  Applying auth.0011_update_proxy_permissions... OK
+  Applying auth.0012_alter_user_first_name_max_length... OK
+  Applying sessions.0001_initial... OK
+</code></pre></div></div>
+
+<h5 id="4-define-models-">4. Define Models: <br /></h5>
+<p>Models in django is used to define database fields used by the apps.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#biscuits/models.py
+from django.db import models
+
+# Create your models here.
+class BiscuitStock(models.Model):
+    name = models.CharField(max_length=200)
+    price = models.IntegerField()
+    quantity = models.IntegerField()
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#cakes/models.py
+from django.db import models
+
+# Create your models here.
+class CakeStock(models.Model):
+    name = models.CharField(max_length=200)
+    price = models.IntegerField()
+    quantity = models.IntegerField()
+</code></pre></div></div>
+
+<h5 id="5-define-serializers-">5. Define Serializers: <br /></h5>
+<p>Let us understand, “What are serializers?” <br />
+In the context of Django, serializers help convert(or serialize) complex data types like django models,
+querysets into native python datatypes which then can be rendered into JSON, XML or anyother supported
+format. <br /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#biscuits/serializers.py 
+from biscuits.models import BiscuitStock
+from rest_framework import serializers
+
+class BiscuitStockSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = BiscuitStock
+        fields = ["name","price","quantity"]
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#cakes/serializers.py
+from cakes.models import CakeStock
+from rest_framework import serializers
+
+class CakeStockSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = CakeStock
+        fields = ["name","quantity","price"]
+</code></pre></div></div>
+
+<h5 id="6-define-views-">6. Define views: <br /></h5>
+<p>Views in django are used to process web requests and return web response</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#biscuits/views.py
+from rest_framework import  viewsets
+from biscuits.models import BiscuitStock
+from biscuits.serializers import BiscuitStockSerializer
+
+
+# Create your views here.
+class BiscuitsViewSet(viewsets.ModelViewSet):
+    queryset = BiscuitStock.objects.all().order_by("name")
+    serializer_class = BiscuitStockSerializer
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#cakes/views.py
+from rest_framework import viewsets
+from cakes.models import CakeStock
+from cakes.serializers import CakeStockSerializer
+
+# Create your views here.
+class  CakeStockViewset(viewsets.ModelViewSet):
+    queryset = CakeStock.objects.all().order_by("name")
+    serializer_class = CakeStockSerializer
+</code></pre></div></div>
+
+<h5 id="7-define-urls-">7. Define urls <br /></h5>
+<p>In django urls.py is used for mapping different web address(url’s) to their corresponding python functions or views</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#tastybites/urls.py
+from django.urls import include,path
+from rest_framework import routers
+
+from biscuits.views import BiscuitsViewSet
+from cakes.views import CakeStockViewset
+
+router = routers.DefaultRouter()
+router.register(r"biscuits",BiscuitsViewSet)
+router.register("cakes",CakeStockViewset)
+
+urlpatterns = [
+    path("",include(router.urls))
+]
+</code></pre></div></div>
+
+<h5 id="8-in-settingspy-add-rest_frameworkbiscuitscakes-to-installed_apps">8. In settings.py add ‘rest_framework’,’biscuits’,’cakes’ to INSTALLED_APPS</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>INSTALLED_APPS = [
+    'biscuits',
+    'cakes',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'rest_framework',
+]
+</code></pre></div></div>
+<h5 id="9-run-makemigrations-for-each-app-to-define-db-schema-followed-by-migrate-to-sync-db">9. Run makemigrations for each app to define DB schema followed by migrate to sync DB</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[]% python manage.py makemigrations biscuits
+Migrations for 'biscuits':
+  biscuits/migrations/0001_initial.py
+    + Create model BiscuitStock
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[]% python manage.py makemigrations cakes   
+Migrations for 'cakes':
+  cakes/migrations/0001_initial.py
+    + Create model CakeStock
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python manage.py migrate                
+Operations to perform:
+  Apply all migrations: admin, auth, biscuits, cakes, contenttypes, sessions
+Running migrations:
+  Applying biscuits.0001_initial... OK
+  Applying cakes.0001_initial... OK
+</code></pre></div></div>
+
+<h5 id="10-folder-structure">10. Folder structure</h5>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[]% find .
+./cakes/migrations/__init__.py
+./cakes/migrations/0001_initial.py
+./cakes/models.py
+./cakes/serializers.py
+./cakes/__init__.py
+./cakes/apps.py
+./cakes/admin.py
+./cakes/tests.py
+./cakes/views.py
+./db.sqlite3
+./manage.py
+./biscuits/migrations/__init__.py
+./biscuits/migrations/0001_initial.py
+./biscuits/models.py
+./biscuits/serializers.py
+./biscuits/__init__.py
+./biscuits/apps.py
+./biscuits/admin.py
+./biscuits/tests.py
+./biscuits/views.py
+./tastybites/asgi.py
+./tastybites/__init__.py
+./tastybites/settings.py
+./tastybites/urls.py
+./tastybites/wsgi.py
+</code></pre></div></div>
+
+<h5 id="11-run-your-server">11. Run your server</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python manage.py runserver
+</code></pre></div></div>
+<h5 id="12-navigate-to-http1270018000-in-your-browser-which-lists-items-using-get-and-create-an-item-using-post">12. Navigate to http://127.0.0.1:8000 in your browser which lists items using “GET” and create an item using “POST”</h5>
+
+<p><img src="/assets/images/CreateCake.png" alt="create_cake" /></p>
+
+<h5 id="13-created-an-item">13. Created an item</h5>
+
+<p><img src="/assets/images/CreatedCake.png" alt="created_cake" /></p>
+
+<h5 id="14-update-an-item-using-put-after-navigating-to-http1270018000cakes2">14. Update an item using “PUT” after navigating to http://127.0.0.1:8000/cakes/2</h5>
+
+<p><img src="/assets/images/UpdateCakeEntry.png" alt="update_cake" /></p>
+
+<h5 id="15-quantity-field-updated">15. Quantity field updated</h5>
+
+<p><img src="/assets/images/UpdatedCake.png" alt="updated_cake" /></p>
+
+<h5 id="16-delete-an-entry-using-delete-after-navigating-to-http1270018000cakes2">16. Delete an entry using “DELETE” after navigating to http://127.0.0.1:8000/cakes/2</h5>
+
+<p><img src="/assets/images/DeleteCake.png" alt="delete_cake" /></p>
+
+<h5 id="16-deleted-an-entry">16. Deleted an entry</h5>
+
+<p><img src="/assets/images/DeletedCake.png" alt="deleted_cake" /></p>
+
+<h3 id="link-to-github-for-you-to-fork-and-build">Link to github for you to fork and build</h3>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://github.com/rsathyendhra/django-rest-framework-sample
+</code></pre></div></div>
+
+<h2 id="reference">Reference</h2>
+<ul>
+  <li>https://www.django-rest-framework.org/tutorial/quickstart/</li>
+</ul>]]></content><author><name>Sathyendhra</name></author><category term="Technical" /><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">Kubernetes</title><link href="http://localhost:4000/technical/2026/01/04/kubernetes.html" rel="alternate" type="text/html" title="Kubernetes" /><published>2026-01-04T00:00:00+05:30</published><updated>2026-01-04T00:00:00+05:30</updated><id>http://localhost:4000/technical/2026/01/04/kubernetes</id><content type="html" xml:base="http://localhost:4000/technical/2026/01/04/kubernetes.html"><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>“Kubernetes” – does this term ring a bell? Especially to all the technology enthusiasts out there you must have heard or come across this term, If your answer is yes and you understand everything around it, you may give this concept a skip. For the rest who have heard the term and know briefly about it, stick around and browse through the sections as a refresher and for people who have not heard of this term or are not well versed, worry not, this blog will give you much information to get you started and interested.</p>
+
+<p>The content is divided into 4 parts,</p>
+
+<ul>
+  <li>History</li>
+  <li>What is Kubernetes?</li>
+  <li>Why Kubernetes?</li>
+  <li>How to get started with Kubernetes?</li>
+</ul>
+
+<h2 id="history">History</h2>
+<p>Before directly jumping into getting to knowing kubernetes, it is best to understand the evolution of deployments in the software industry. Software deployment is simply a way of running applications, traditionally they were run on physical servers. There were limitations in running application in physical servers which led to the inception of a concept called “Virtualization”.</p>
+
+<h3 id="what-are-the-limitationsdrawbacks-of-running-application-on-physical-servers">What are the limitations/drawbacks of running application on physical servers?</h3>
+<p>One major disadvantage is the lack of ability of sharing resources among different processes easily. Cost also plays an important role, a physical server is pricey to maintain(inclusive of real estate and infra for cooling). Scaling up is not easy and time consuming.</p>
+
+<h3 id="what-is-virtualization">What is virtualization?</h3>
+<p>In simple terms it is a software which allows to deploy(create) multiple machines using resources of an underlying physical hardware(host).</p>
+
+<p>Virtualization made software or app developments convenient but to further simplify software deployments the concept of container deployments came into existence.</p>
+
+<h3 id="what-is-container">What is container?</h3>
+<p>An application and its dependencies packaged into one portable unit which is also light weight is referred to as a container.</p>
+
+<p>he high rate of adoption of container deployments gave rise to widespread use of “kubernetes”. So simply put without containers, kubernetes would not exist.</p>
+
+<p>Now with the above concepts in mind, let us proceed to address the main topic i.e.,\</p>
+
+<h2 id="what-is-kubernetes">What is Kubernetes?</h2>
+<p>Kubernetes is an orchestrator which intelligently helps in managing multiple container applications spanning across many hosts.</p>
+
+<h2 id="why-kubernetes">Why Kubernetes?</h2>
+<p>The main purpose of container is optimum resource utilization, kubernetes with its intelligence and orchestration help to achieve this across multiple hosts, thereby helping to unlock the purpose and potential of containerized applications.</p>
+
+<h2 id="kubernetes-vs-docker">Kubernetes vs docker</h2>
+<p><img src="/assets/images/dockervskubernetes.png" alt="docker vs kubernetes" /></p>
+
+<p>Docker is a containerization platform which helps in building, implementing and running containerized applications limited to one docker instance per host os  whereas Kubernetes is much more, it is a platform for running and managing containers from many container runtimes and operates on a cluster level on many hosts. Docker is one of the many runtimes kubernetes supports.</p>
+
+<h2 id="how-to-get-started-with-kubernetes">How to get started with kubernetes?</h2>
+<h3 id="steps-for-mac">Steps for mac</h3>
+
+<p>Install kubectl</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/darwin/amd64/kubectl"
+</code></pre></div></div>
+
+<p>Check Installation</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/darwin/arm64/kubectl.sha256"
+echo "$(cat kubectl.sha256)  kubectl" | shasum -a 256 --check
+kubectl: OK
+</code></pre></div></div>
+
+<p>Make the kubectl binary executable.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>chmod +x ./kubectl
+</code></pre></div></div>
+
+<p>Move the kubectl binary to a file location on your system PATH.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo mv ./kubectl /usr/local/bin/kubectl 
+sudo chown root: /usr/local/bin/kubectl
+</code></pre></div></div>
+
+<p>Test to ensure the version you installed is up-to-date:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl version --client
+Client Version: v1.31.3
+Kustomize Version: v5.4.2
+</code></pre></div></div>
+
+<p>Verify kubectl configuration</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl cluster-info
+</code></pre></div></div>
+
+<p>Once the setup is complete, cluster-information can be got. Let us understand more about kubernetes cluster in the next section.</p>
+
+<h2 id="kubernetes-cluster">Kubernetes Cluster</h2>
+<p><img src="/assets/images/kube_cluster.png" alt="kube_cluster" /></p>
+
+<p>Kubernetes cluster is composed of two components,</p>
+<ul>
+  <li>kubernetes nodes</li>
+  <li>kubernetes control plane</li>
+</ul>
+
+<p>Kubernetes node comprises of:</p>
+<ul>
+  <li>kubelet - Responsible for running pods along with their containers using container runtime</li>
+  <li>kube-porxy - Optional component which is used to maintain networking rules on nodes to implement services.</li>
+  <li>container runtime -  container runtime software used by kubelet to run containers.</li>
+</ul>
+
+<p>Kubernete control plane consists of</p>
+<ul>
+  <li>kubeapi server - It is the core component that is responsible to expose http API’s of kubernetes.</li>
+  <li>control manager (including optional cloud control manager) - It is a controller to implement kubernetes API behavior</li>
+  <li>scheduler - Ensures that all pods are assigned to a suitable node</li>
+  <li>etcd - key value datastore for API server data which is conistent and highly avaialble</li>
+</ul>
+
+<p>In the next section let us understand about pod in kubernetes and how to create it,</p>
+
+<h2 id="what-is-a-pod-or-what-are-pods-in-kubernetes">What is a pod? or What are pods in kubernetes?</h2>
+<p>Pod is smallest deployable unit that can be created and managed by kubernetes. It can contain one or more containers. Generally it is one conatiner per pod but depending on the business use case it can accomodate more than one container.</p>
+
+<h3 id="how-to-deploy-a-sample-pod">How to deploy a sample pod?</h3>
+<p>Below is a sample yaml file that deploys a pod running nginx container with image nginx:1.14.2</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.14.2
+    ports:
+    - containerPort: 80
+</code></pre></div></div>
+<p>Save the above file as nginx.yaml and run the below command:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl apply -f nginx.yaml -n &lt;namespace_name&gt;
+</code></pre></div></div>
+<h3 id="lifecycle-of-a-pod">Lifecycle of a pod</h3>
+
+<p>Pods lifecycle starts with a “pending” phase, followed by “running” when at least one of the containers starts and then moves to “succeeded” if everything goes fine or to  a “failed” phase if one of the container terminated with failure.</p>
+
+<p>In real world, individual pods are generally not deployed, they get deployed using workload resources. Let us understand a little bit about workload resources in kubernetes.</p>
+
+<h3 id="pods-are-ephemeral">Pods are ephemeral</h3>
+<p>In kubernetes pods are ephemeral meaning that they can be terminated and redeployed by the nodes and are stateless. If a pod needs its identity and data to be non-ephemeral that can be achieved by making it persistent using statefulsets (a type of workload resource in kubernetes) which is briefly described in the next section.</p>
+
+<h2 id="workload-resources-supported-in-kubernetes">Workload resources supported in kubernetes</h2>
+<p>Workload resources can be described as API objects that manage and run applications/services on the cluster by ensuring the correct pods are running to match a specified desired state.</p>
+
+<p>Type of workloads supported by kubernetes</p>
+
+<p>1) Deployments - It manages a set of pods to run an application which does not maintain state
+2) StatefulSets - It runs a group of pods to run an application which maintains state. For e.g., application requires persistent storage or stable network identity
+3) DaemonSet - It ensures that all nodes have a copy of pod. For e.g., a copy of logs collection running on each node</p>
+
+<p>Other workload types are replicaset,job,cronjob and replicationController.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>In this post we have just scratched the surface in trying to understand the concept of kubernetes. With grasp of the above, one can embark on the journey of exploring  deeper into the world of kubernetes.</p>
+
+<h2 id="references">References</h2>
+<ul>
+  <li>https://kubernetes.io/docs/tutorials/kubernetes-basics/</li>
+  <li>https://portworx.com/blog/kubernetes-vs-virtual-machines/</li>
+  <li>https://www.atlassian.com/microservices/microservices-architecture/kubernetes-vs-docker#:~:text=Kubernetes%20can%20be%20used%20with,containers%20a%20week%20at%20scale.</li>
+  <li>https://www.index.dev/blog/kubernetes-vs-docker</li>
+</ul>]]></content><author><name>Sathyendhra</name></author><category term="Technical" /><summary type="html"><![CDATA[Introduction “Kubernetes” – does this term ring a bell? Especially to all the technology enthusiasts out there you must have heard or come across this term, If your answer is yes and you understand everything around it, you may give this concept a skip. For the rest who have heard the term and know briefly about it, stick around and browse through the sections as a refresher and for people who have not heard of this term or are not well versed, worry not, this blog will give you much information to get you started and interested.]]></summary></entry></feed>

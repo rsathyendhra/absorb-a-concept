@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Understanding REST | Absorb a Concept</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Understanding REST" />
+<meta name="author" content="Sathyendhra" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="This blog serves as a single point of reference for the concepts I have explored. The content is revised as and when I get a better understanding of it. I am hoping it helps the readers." />
+<meta property="og:description" content="This blog serves as a single point of reference for the concepts I have explored. The content is revised as and when I get a better understanding of it. I am hoping it helps the readers." />
+<link rel="canonical" href="http://localhost:4000/technical/2026/01/07/rest.html" />
+<meta property="og:url" content="http://localhost:4000/technical/2026/01/07/rest.html" />
+<meta property="og:site_name" content="Absorb a Concept" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2026-01-07T00:00:00+05:30" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Understanding REST" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sathyendhra"},"dateModified":"2026-01-07T00:00:00+05:30","datePublished":"2026-01-07T00:00:00+05:30","description":"This blog serves as a single point of reference for the concepts I have explored. The content is revised as and when I get a better understanding of it. I am hoping it helps the readers.","headline":"Understanding REST","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/technical/2026/01/07/rest.html"},"url":"http://localhost:4000/technical/2026/01/07/rest.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Absorb a Concept" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Absorb a Concept</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a><a class="page-link" href="/technical/">Technical</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Understanding REST</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2026-01-07T00:00:00+05:30" itemprop="datePublished">Jan 7, 2026
+      </time>
+      &middot; 7 min read
+</p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p><img src="/assets/images/rest_api_blog_header.svg" alt="cover" /></p>
+
+<h2 id="introduction">Introduction</h2>
+<p>In this post, the focus is on understanding the basics of REST and building a sample  REST API using DRF (Django REST Framework). Now let’s get started in absorbing the concept of REST.</p>
+
+<h2 id="what-is-rest">What is REST?</h2>
+<p>REST powers over 80% of public APIs today. Let me start off by saying REST is an acronym which when expanded reads “REpresentational State Transfer”. It is called an architectural style as it provides a set of design principles and constraints that guide the creation of web services systems. Basically REST helps in building web services that help in communicating between different software applications.</p>
+
+<p>Now that I have explained (at least on a high level) about what is REST, now it’s time to understand why REST?</p>
+
+<h2 id="why-rest">Why REST?</h2>
+<p>REST API is used primarily because of its simplicity. Ease of use is the main reason for its adoption in the world. The methods like GET, POST, PATCH, PUT make it convenient to use it.</p>
+
+<h2 id="how-rest">How REST?</h2>
+<p>As REST is an architectural style, it is implemented with the below constraints or  guidelines,</p>
+
+<ul>
+  <li>stateless</li>
+  <li>cacheable</li>
+  <li>uniform interface</li>
+  <li>client server</li>
+  <li>layered system</li>
+  <li>code on demand</li>
+</ul>
+
+<p>Let me elaborate on the above constraints:</p>
+
+<h3 id="client-server">Client Server</h3>
+<p>REST API follows client server architecture where client acts as the trigger system and server services the request from client with a response.</p>
+
+<h3 id="stateless">Stateless</h3>
+<p>The term stateless is that the server does not hold the state of the request, the client is responsible in keeping the entire state of the session.</p>
+
+<h3 id="cacheable">Cacheable</h3>
+<p>Due to stateless constraint efficiency takes a hit, to overcome this and improve the efficiency  client side caching is allowed. This comes with the advantage of improving the efficiency but also the disadvantage of not getting the latest data from the server.</p>
+
+<h3 id="uniform-interface">Uniform Interface</h3>
+<p>Standard HTTP methods like GET, POST, PUT, PATCH, DELETE etc. + URI (uniform resource identifiers) are used by REST API which is a uniform interface for communicating between client and server</p>
+
+<h3 id="layered-component">Layered Component</h3>
+<p>In layered component architecture each component cannot see beyond the immediate layer it is interacting.</p>
+
+<h3 id="code-on-demand">Code on demand</h3>
+<p>REST  provides client with the capability to execute code in the form of script or applets.</p>
+
+<h2 id="what-is-idempotency-in-rest">What is idempotency in REST?</h2>
+<p>When talking about REST one must mention about “Idempotency” . In context of REST, idempotency is a property where making multiple identical requests has the same effect on the server’s state as making a single request.</p>
+
+<h2 id="rest-methods">REST Methods</h2>
+<p>The most common REST methods are listed and described below:</p>
+<ul>
+  <li>GET - Retrieves data (or representation of a resource) from server.</li>
+  <li>POST - Push/submit data to the server to create a new resource or trigger an action(side effect). This method is not idempotent and same back to back post requests results in two new POST requests to server.</li>
+  <li>PUT - Updates existing resources with submitted data. It is idempotent. If the resource does not exist then it can create a new resource(the behaviour is dependent on the API design)</li>
+  <li>PATCH - This method is used to partially modify data of existing resource unlike PUT where the whole data is modified, it is generally not considered safe as it has the ability to change server state and it is not idempotent by default.</li>
+  <li>DELETE - Removes/deletes a specific resource from server.</li>
+  <li>OPTIONS - Fetches the communication options(like methods supported) for a resource/end point.</li>
+  <li>HEAD - Retrieves only headers and not the body. It can be used as a check of existence of a resource without transferring the entire data.</li>
+</ul>
+
+<h2 id="what-is-cors-in-rest">What is CORS in REST?</h2>
+<p>CORS is an acronym for ‘Cross Origin for Resource Sharing’. It is a feature in which one domain can access data/resources from different domain. CORS should be enabled in REST API to avoid the default block  by same-Origin policy.</p>
+
+<h2 id="when-to-use">When to use</h2>
+<ul>
+  <li>Third party integrations to your website - for e.g., a payment processors, link social media platforms or link mapping services</li>
+  <li>IoT devices - Helps IoT devices to communicate with cloud platforms &amp; systems with minimum bandwidth.</li>
+  <li>Cloud Computing &amp; Microservices</li>
+  <li>Public facing API - REST API is best to expose API which is widely consumed by developers using various programming languages and applications.</li>
+  <li>Good for managing data operations on server (CRUD operations)</li>
+</ul>
+
+<h2 id="when-not-to-use-rest-api">When not to use REST API?</h2>
+<ul>
+  <li>Simple traditional website - for e.g., a text based website querying static data from database.</li>
+  <li>High performance and low latency applications - The stateless nature of REST might hinder performance.</li>
+  <li>Specialised internal only microservices - An internal system where client and server is controlled by the same team the strict constraints of REST are unnecessary.</li>
+  <li>Security - REST APIs don’t have built-in security. The developers must manually implement robust security measures increasing the risk of misconfigurations and vulnerabilities if not handled by experts. Built-in security is found in older protocols like SOAP.</li>
+</ul>
+
+<h2 id="rest-in-action-using-drf">REST in action using DRF</h2>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+  <li>Python (v3.13 used in this tutorial)</li>
+  <li>Django module installed</li>
+</ul>
+
+<p>Now let us build our own REST API using DRF which will solve the below problem statement.</p>
+<h3 id="problem-statement">Problem Statement</h3>
+<p>Develop REST API using DRF for inventory of a bakery. The API should be able to list all items, create a new item, update an item and delete an item.</p>
+<h3 id="steps">Steps</h3>
+<h5 id="1-install-django-and-django-rest-framework-python-modules">1. Install django and django rest framework python modules</h5>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>%pip3 install django djangorestframework
+Collecting django
+  Downloading django-6.0.1-py3-none-any.whl.metadata (3.9 kB)
+Collecting djangorestframework
+  Downloading djangorestframework-3.16.1-py3-none-any.whl.metadata (11 kB)
+Collecting asgiref&gt;=3.9.1 (from django)
+  Downloading asgiref-3.11.0-py3-none-any.whl.metadata (9.3 kB)
+Collecting sqlparse&gt;=0.5.0 (from django)
+  Downloading sqlparse-0.5.5-py3-none-any.whl.metadata (4.7 kB)
+Downloading django-6.0.1-py3-none-any.whl (8.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.3/8.3 MB 40.0 MB/s eta 0:00:00
+Downloading djangorestframework-3.16.1-py3-none-any.whl (1.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.1/1.1 MB 39.4 MB/s eta 0:00:00
+Downloading asgiref-3.11.0-py3-none-any.whl (24 kB)
+Downloading sqlparse-0.5.5-py3-none-any.whl (46 kB)
+Installing collected packages: sqlparse, asgiref, django, djangorestframework
+Successfully installed asgiref-3.11.0 django-6.0.1 djangorestframework-3.16.1 sqlparse-0.5.5
+</code></pre></div></div>
+<h5 id="2-start-project-and-app-using-django---this-creates-the-folder-structure-for-us-to-get-started">2. Start project and app using django - this creates the folder structure for us to get started</h5>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[]% django-admin startproject tastybites .
+[]% ls
+manage.py	tastybites
+[]% cd tastybites
+[tastybites] % ls
+__init__.py	asgi.py		settings.py	urls.py		wsgi.py
+[tastybites] % cd ..
+[] % django-admin startapp biscuits
+[] % django-admin startapp cakes
+</code></pre></div></div>
+<h5 id="3-sync-db">3. Sync DB</h5>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[]%python manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, sessions
+Running migrations:
+  Applying contenttypes.0001_initial... OK
+  Applying auth.0001_initial... OK
+  Applying admin.0001_initial... OK
+  Applying admin.0002_logentry_remove_auto_add... OK
+  Applying admin.0003_logentry_add_action_flag_choices... OK
+  Applying contenttypes.0002_remove_content_type_name... OK
+  Applying auth.0002_alter_permission_name_max_length... OK
+  Applying auth.0003_alter_user_email_max_length... OK
+  Applying auth.0004_alter_user_username_opts... OK
+  Applying auth.0005_alter_user_last_login_null... OK
+  Applying auth.0006_require_contenttypes_0002... OK
+  Applying auth.0007_alter_validators_add_error_messages... OK
+  Applying auth.0008_alter_user_username_max_length... OK
+  Applying auth.0009_alter_user_last_name_max_length... OK
+  Applying auth.0010_alter_group_name_max_length... OK
+  Applying auth.0011_update_proxy_permissions... OK
+  Applying auth.0012_alter_user_first_name_max_length... OK
+  Applying sessions.0001_initial... OK
+</code></pre></div></div>
+
+<h5 id="4-define-models-">4. Define Models: <br /></h5>
+<p>Models in django is used to define database fields used by the apps.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#biscuits/models.py
+from django.db import models
+
+# Create your models here.
+class BiscuitStock(models.Model):
+    name = models.CharField(max_length=200)
+    price = models.IntegerField()
+    quantity = models.IntegerField()
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#cakes/models.py
+from django.db import models
+
+# Create your models here.
+class CakeStock(models.Model):
+    name = models.CharField(max_length=200)
+    price = models.IntegerField()
+    quantity = models.IntegerField()
+</code></pre></div></div>
+
+<h5 id="5-define-serializers-">5. Define Serializers: <br /></h5>
+<p>Let us understand, “What are serializers?” <br />
+In the context of Django, serializers help convert(or serialize) complex data types like django models,
+querysets into native python datatypes which then can be rendered into JSON, XML or anyother supported
+format. <br /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#biscuits/serializers.py 
+from biscuits.models import BiscuitStock
+from rest_framework import serializers
+
+class BiscuitStockSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = BiscuitStock
+        fields = ["name","price","quantity"]
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#cakes/serializers.py
+from cakes.models import CakeStock
+from rest_framework import serializers
+
+class CakeStockSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = CakeStock
+        fields = ["name","quantity","price"]
+</code></pre></div></div>
+
+<h5 id="6-define-views-">6. Define views: <br /></h5>
+<p>Views in django are used to process web requests and return web response</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#biscuits/views.py
+from rest_framework import  viewsets
+from biscuits.models import BiscuitStock
+from biscuits.serializers import BiscuitStockSerializer
+
+
+# Create your views here.
+class BiscuitsViewSet(viewsets.ModelViewSet):
+    queryset = BiscuitStock.objects.all().order_by("name")
+    serializer_class = BiscuitStockSerializer
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#cakes/views.py
+from rest_framework import viewsets
+from cakes.models import CakeStock
+from cakes.serializers import CakeStockSerializer
+
+# Create your views here.
+class  CakeStockViewset(viewsets.ModelViewSet):
+    queryset = CakeStock.objects.all().order_by("name")
+    serializer_class = CakeStockSerializer
+</code></pre></div></div>
+
+<h5 id="7-define-urls-">7. Define urls <br /></h5>
+<p>In django urls.py is used for mapping different web address(url’s) to their corresponding python functions or views</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#tastybites/urls.py
+from django.urls import include,path
+from rest_framework import routers
+
+from biscuits.views import BiscuitsViewSet
+from cakes.views import CakeStockViewset
+
+router = routers.DefaultRouter()
+router.register(r"biscuits",BiscuitsViewSet)
+router.register("cakes",CakeStockViewset)
+
+urlpatterns = [
+    path("",include(router.urls))
+]
+</code></pre></div></div>
+
+<h5 id="8-in-settingspy-add-rest_frameworkbiscuitscakes-to-installed_apps">8. In settings.py add ‘rest_framework’,’biscuits’,’cakes’ to INSTALLED_APPS</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>INSTALLED_APPS = [
+    'biscuits',
+    'cakes',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'rest_framework',
+]
+</code></pre></div></div>
+<h5 id="9-run-makemigrations-for-each-app-to-define-db-schema-followed-by-migrate-to-sync-db">9. Run makemigrations for each app to define DB schema followed by migrate to sync DB</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[]% python manage.py makemigrations biscuits
+Migrations for 'biscuits':
+  biscuits/migrations/0001_initial.py
+    + Create model BiscuitStock
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[]% python manage.py makemigrations cakes   
+Migrations for 'cakes':
+  cakes/migrations/0001_initial.py
+    + Create model CakeStock
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python manage.py migrate                
+Operations to perform:
+  Apply all migrations: admin, auth, biscuits, cakes, contenttypes, sessions
+Running migrations:
+  Applying biscuits.0001_initial... OK
+  Applying cakes.0001_initial... OK
+</code></pre></div></div>
+
+<h5 id="10-folder-structure">10. Folder structure</h5>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[]% find .
+./cakes/migrations/__init__.py
+./cakes/migrations/0001_initial.py
+./cakes/models.py
+./cakes/serializers.py
+./cakes/__init__.py
+./cakes/apps.py
+./cakes/admin.py
+./cakes/tests.py
+./cakes/views.py
+./db.sqlite3
+./manage.py
+./biscuits/migrations/__init__.py
+./biscuits/migrations/0001_initial.py
+./biscuits/models.py
+./biscuits/serializers.py
+./biscuits/__init__.py
+./biscuits/apps.py
+./biscuits/admin.py
+./biscuits/tests.py
+./biscuits/views.py
+./tastybites/asgi.py
+./tastybites/__init__.py
+./tastybites/settings.py
+./tastybites/urls.py
+./tastybites/wsgi.py
+</code></pre></div></div>
+
+<h5 id="11-run-your-server">11. Run your server</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python manage.py runserver
+</code></pre></div></div>
+<h5 id="12-navigate-to-http1270018000-in-your-browser-which-lists-items-using-get-and-create-an-item-using-post">12. Navigate to http://127.0.0.1:8000 in your browser which lists items using “GET” and create an item using “POST”</h5>
+
+<p><img src="/assets/images/CreateCake.png" alt="create_cake" /></p>
+
+<h5 id="13-created-an-item">13. Created an item</h5>
+
+<p><img src="/assets/images/CreatedCake.png" alt="created_cake" /></p>
+
+<h5 id="14-update-an-item-using-put-after-navigating-to-http1270018000cakes2">14. Update an item using “PUT” after navigating to http://127.0.0.1:8000/cakes/2</h5>
+
+<p><img src="/assets/images/UpdateCakeEntry.png" alt="update_cake" /></p>
+
+<h5 id="15-quantity-field-updated">15. Quantity field updated</h5>
+
+<p><img src="/assets/images/UpdatedCake.png" alt="updated_cake" /></p>
+
+<h5 id="16-delete-an-entry-using-delete-after-navigating-to-http1270018000cakes2">16. Delete an entry using “DELETE” after navigating to http://127.0.0.1:8000/cakes/2</h5>
+
+<p><img src="/assets/images/DeleteCake.png" alt="delete_cake" /></p>
+
+<h5 id="16-deleted-an-entry">16. Deleted an entry</h5>
+
+<p><img src="/assets/images/DeletedCake.png" alt="deleted_cake" /></p>
+
+<h3 id="link-to-github-for-you-to-fork-and-build">Link to github for you to fork and build</h3>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://github.com/rsathyendhra/django-rest-framework-sample
+</code></pre></div></div>
+
+<h2 id="reference">Reference</h2>
+<ul>
+  <li>https://www.django-rest-framework.org/tutorial/quickstart/</li>
+</ul>
+
+
+  </div><nav class="post-nav"><a class="post-nav-item post-nav-prev" href="/technical/2026/01/04/kubernetes.html">
+      <span class="post-nav-label">&larr; Previous</span>
+      <span class="post-nav-title">Kubernetes</span>
+    </a><a class="post-nav-item post-nav-next" href="/technical/2026/02/18/fastapi.html">
+      <span class="post-nav-label">Next &rarr;</span>
+      <span class="post-nav-title">FastAPI Tutorial: Architecture, Core Concepts, and a CRUD API Example</span>
+    </a></nav><a class="u-url" href="/technical/2026/01/07/rest.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper"><h2 class="footer-heading">Absorb a Concept</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Sathyendhra</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>This blog serves as a single point of reference for the concepts I have explored. The content is revised as and when I get a better understanding of it. I am hoping it helps the readers.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

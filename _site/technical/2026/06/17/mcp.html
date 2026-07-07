@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Understanding MCP: What It Is, What It Isn’t, and How to Build It | Absorb a Concept</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Understanding MCP: What It Is, What It Isn’t, and How to Build It" />
+<meta name="author" content="Sathyendhra" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="This blog serves as a single point of reference for the concepts I have explored. The content is revised as and when I get a better understanding of it. I am hoping it helps the readers." />
+<meta property="og:description" content="This blog serves as a single point of reference for the concepts I have explored. The content is revised as and when I get a better understanding of it. I am hoping it helps the readers." />
+<link rel="canonical" href="http://localhost:4000/technical/2026/06/17/mcp.html" />
+<meta property="og:url" content="http://localhost:4000/technical/2026/06/17/mcp.html" />
+<meta property="og:site_name" content="Absorb a Concept" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2026-06-17T00:00:00+05:30" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Understanding MCP: What It Is, What It Isn’t, and How to Build It" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sathyendhra"},"dateModified":"2026-06-17T00:00:00+05:30","datePublished":"2026-06-17T00:00:00+05:30","description":"This blog serves as a single point of reference for the concepts I have explored. The content is revised as and when I get a better understanding of it. I am hoping it helps the readers.","headline":"Understanding MCP: What It Is, What It Isn’t, and How to Build It","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/technical/2026/06/17/mcp.html"},"url":"http://localhost:4000/technical/2026/06/17/mcp.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Absorb a Concept" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Absorb a Concept</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a><a class="page-link" href="/technical/">Technical</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Understanding MCP: What It Is, What It Isn&#39;t, and How to Build It</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2026-06-17T00:00:00+05:30" itemprop="datePublished">Jun 17, 2026
+      </time>
+      &middot; 17 min read
+</p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p><img src="/assets/images/mcp/MCP_new.png" alt="mcp_header" /></p>
+
+<h2 id="introduction">Introduction</h2>
+<p>This post explains MCP, showing why it’s not just a REST replacement, and walks through a practical use case explaining. A working use case showing MCP in action that will help you grasp the concept better. Even though MCP was introduced to the world in late 2024 by Anthropic, it’s adoption in the world of AI has been swift. MCP was created at Anthropic by engineers David Soria Parra and Justin Spahr-Summers. In December 2025, Anthropic donated the MCP to the Agentic AI Foundation, a directed fund under the Linux Foundation, making it truly vendor-neutral and community-driven going forward. By the end of this blog we will get a high level understanding about why MCP is called the USB-C for AI</p>
+
+<h2 id="what-is-mcp">What is MCP?</h2>
+<p>MCP stands for ‘Model Context Protocol’. It is an open standard that allow AI applications to interact with data systems.</p>
+
+<h2 id="why-mcp">Why MCP?</h2>
+<p>MCP standardises the way an AI system connect to external tool or data sources. The AI system can be an AI application that you’ve developed or AI assistants like Claude, Grok, chatgpt, gemini etc. An example would give a better understanding:</p>
+
+<p>Let’s say we are building an AI application called “Efficient Me” which needs access to your calendar to understand your workload and optimise your time based on certain guidelines. So, we code a connector which connects our AI application to the google calendar. The Application would also need access to your slack to notify you about only important meetings, messages and discussion threads. For this another connector has to be written. While implementing a connector, security aspects (for e.g., your gmail credentials should not be exposed to the AI application) should be given prominence.</p>
+
+<p>Writing separate connectors for every custom integration is inefficient and fragmented. MCP solved this very problem by creating a common language so our AI system can work with any service that supports it. MCP serves as an infrastructure to our AI Application by giving it safe, standardised access to our tools and data.</p>
+
+<h2 id="key-benefits-of-mcp">Key Benefits of MCP</h2>
+<ul>
+  <li>Standardization – Services don’t need to build separate integrations for every AI app; they just support MCP once</li>
+  <li>Composability – You can chain multiple tools together seamlessly (e.g., search Drive → create Asana task → send Slack notification)</li>
+  <li>Security – Credentials and permissions stay on your machine; Claude doesn’t see them directly</li>
+  <li>Extensibility – Developers can build custom MCP servers for proprietary or niche systems</li>
+</ul>
+
+<h3 id="️-a-note-on-security">⚠️ A Note on Security</h3>
+
+<p>While MCP’s architecture provides security benefits, connecting public MCP servers requires caution. We’ll dive into security considerations in detail later in this post, but keep this in mind: not all public servers are equally trustworthy. Verify the source, check for HTTPS+OAuth, and ensure you trust the maintainers before connecting.</p>
+
+<h2 id="mcp-architecture">MCP Architecture</h2>
+
+<p><img src="/assets/images/mcp/mcp_architecture_ai_app.svg" alt="mcp_architecture_ai_app.svg" /></p>
+
+<p>The Basic Flow is as follows:</p>
+<ul>
+  <li>You connect a service (e.g., Gmail) via AI app</li>
+  <li>MCP establishes a connection between AI app and that service</li>
+  <li>AI app can now call tools on that service (read emails, create tasks, etc.)</li>
+  <li>Results come back for AI app to processes them</li>
+</ul>
+
+<p>Now you might wonder: “Doesn’t this sound like a REST API?” The answer is nuanced. While both MCP and REST 
+are remote procedure call (RPC) systems—asking a remote system to do something and getting results back—they 
+serve fundamentally different purposes and are optimized for different scenarios. Let’s explore these distinctions.</p>
+
+<h2 id="rest-api-and-mcp-clear-distinction">REST API and MCP: Clear distinction</h2>
+<p>When trying to understand MCP, one might correlate it to REST API. The main reason for this correlation is that both REST and MCP are Remote Procedure Call (RPC) systems i.e., asking a remote system to do something and get the restult back. When questions like “can MCP replace REST?” popup in our minds we need to understand the nuances to answer them.</p>
+
+<p>The key distinction is that:</p>
+<ul>
+  <li>REST is about endpoints that many clients call. For example, a website and a mobile app can both hit the same endpoints.</li>
+  <li>MCP is about tools (i.e., functions) that an AI app/Claude can understand and invoke. For example, Claude decides which tool to call based on the user input which under the hood results in MCP client making the call to the MCP server to fulfill a user request.</li>
+</ul>
+
+<h4 id="rest-vs-mcp">REST vs MCP</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Dimension</th>
+      <th>REST</th>
+      <th>MCP</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Core concept</td>
+      <td>RPC via HTTP</td>
+      <td>RPC via JSON-RPC</td>
+    </tr>
+    <tr>
+      <td>Discovery</td>
+      <td>OpenAPI schema</td>
+      <td>MCP schema</td>
+    </tr>
+    <tr>
+      <td>Authentication</td>
+      <td>Client provides credentails (header)</td>
+      <td>Server holds credentials</td>
+    </tr>
+    <tr>
+      <td>Error Handling</td>
+      <td>HTTP status code + JSON</td>
+      <td>JSON text response</td>
+    </tr>
+    <tr>
+      <td>Optimised for</td>
+      <td>Many clients and high performance</td>
+      <td>1-2 servers per user and seconds of latency acceptable</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Now the question is when can MCP actually replace REST and what is practical?</p>
+<ul>
+  <li>Internal systems: You’re building a system where the AI application(like claude) is the only client. In this case No REST API needed; MCP is simpler.</li>
+  <li>Wrapping existing REST: There is  public REST API that is already used by other apps. Build an MCP server that wraps it for your AI APP. Both coexist—REST for scale, MCP for your custom AI APP.</li>
+  <li>Credential-sensitive operations: You want your AI application to call Gmail without handling keys. MCP server is practical in this case as it manages the auth part, your AI APP will never see the secrets.</li>
+</ul>
+
+<p>It is not REST or MCP, in the real world it is REST and MCP. REST APIs handle the infrastructure, serving as the backbone and MCP wraps part of it as a AI APP facing interface.</p>
+
+<h4 id="mcp-vs-tool-calling">MCP vs Tool Calling</h4>
+<p>MCP and Tool calling is confusing for the people who are new to world of AI engineering. They are two essential AI concepts which are important to be absorbed.</p>
+
+<h5 id="tool-calling-also-called-function-calling">Tool Calling (also called Function Calling)</h5>
+<p>A Tool calling provides the ability for an AI model to request external functions be executed. It is used by all modern LLMs(OpenAI, Claude, Gemini, Llama, etc.). The purpose is to turn AI from text generator/predictor into an action-taking agent. For example, User asks “What’s the weather in Bengaluru?” → AI decides to call get_weather() function → gets real data → responds. Without tool calling it can only guess but with an authentic get_weather() function call the response is precise.</p>
+
+<h5 id="mcp-model-context-protocol">MCP (Model Context Protocol)</h5>
+<p>MCP is a standardized protocol for exposing and discovering tools securely. It is used by all modern LLMs. The purpose is to stop building N×M custom connectors; build server once (by defining tools once within) and  use it as USB whenever wherever it is needed. For e.g., GitHub MCP server exposes tools which can be used by ChatGPT, used by Claude Application and also used by Gemini serving its purpose of build once and use everywhere.</p>
+
+<h2 id="mcp-types">MCP Types</h2>
+<p>Before getting into MCP server we need to understand MCP types. There are 3 MCP types namely tools, resources and prompt context. Below table helps understand each type better:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Description</th>
+      <th>Tools</th>
+      <th>Resource</th>
+      <th>Prompts</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Who Controls It</td>
+      <td>AI Model</td>
+      <td>Application</td>
+      <td>User/Application</td>
+    </tr>
+    <tr>
+      <td>When Is It Invoked</td>
+      <td>When AI decides it is needed</td>
+      <td>When app decides to load it</td>
+      <td>When user explicitly selects it</td>
+    </tr>
+    <tr>
+      <td>Use Case</td>
+      <td>send an email</td>
+      <td>Here is the context for decision making</td>
+      <td>Write a weekly report using this template</td>
+    </tr>
+    <tr>
+      <td>Discovery Method</td>
+      <td>tools/list</td>
+      <td>resources/list</td>
+      <td>prompts/list</td>
+    </tr>
+    <tr>
+      <td>Frequency Of Use</td>
+      <td>Very common</td>
+      <td>Growing	Emerging / Underutilized</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Can Modify State?</td>
+      <td>Yes (create, update, delete)</td>
+      <td>No (read-only)</td>
+      <td>No (instructions only)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="security-considerations-during-implementation">Security Considerations During Implementation</h3>
+
+<p>Before we build our calculator example, it’s worth noting that in real-world scenarios, MCP servers handle sensitive operations like reading your calendar or sending emails. The basic calculator we’ll build is low-risk, but the principles you’ll learn apply equally to security-critical servers. We’ll explore comprehensive security best practices later in this post.</p>
+
+<h2 id="mcp-in-action">MCP in action</h2>
+
+<p>Check out the source code on <a href="https://github.com/rsathyendhra/mcp-calculator">GitHub-MCP-calculator</a>.</p>
+
+<h3 id="how-to-build-a-simple-mcp-server-using-python">How to build a simple MCP server using python?</h3>
+<p>Let us build a simple calculator MCP which does basic arithmetic operations.</p>
+
+<h5 id="step-1--mcp-module-installation">Step 1 : MCP module installation</h5>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; pip install mcp
+</code></pre></div></div>
+<h5 id="step-2--create-simple_mcp_serverpy">Step 2 : Create simple_mcp_server.py</h5>
+<h5 id="step-21-import-module">Step 2.1: Import module</h5>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import asyncio 
+from mcp.server.fastmcp import FastMCP
+</code></pre></div></div>
+<p>Refer to Appendix A below for a better understanding of asyncio</p>
+
+<h5 id="step-22-create-mcp-server-instance">Step 2.2: Create MCP server instance</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mcp = FastMCP("calculator")
+</code></pre></div></div>
+<h5 id="step-23-define-tools-that-mcp-will-expose">Step 2.3: Define tools that MCP will expose</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  
+@mcp.tool()
+def add(a: float, b: float) -&gt; float:
+    """Add two numbers together"""
+    return a + b
+
+
+@mcp.tool()
+def subtract(a: float, b: float) -&gt; float:
+    """Subtract b from a"""
+    return a - b
+
+
+@mcp.tool()
+def multiply(a: float, b: float) -&gt; float:
+    """Multiply two numbers"""
+    return a * b
+
+
+@mcp.tool()
+def divide(a: float, b: float) -&gt; float:
+    """Divide a by b"""
+    if b == 0:
+        raise ValueError("Cannot divide by zero")
+    return a / b
+
+
+@mcp.tool()
+def power(base: float, exponent: float) -&gt; float:
+    """Raise base to the power of exponent"""
+    return base ** exponent
+
+
+@mcp.tool()
+def square_root(number: float) -&gt; float:
+    """Calculate the square root of a number"""
+    if number &lt; 0:
+        raise ValueError("Cannot calculate square root of negative number")
+    return number ** 0.5
+</code></pre></div></div>
+<h5 id="step-24-run-the-server">Step 2.4 Run the server</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  if __name__ == "__main__":
+    print("=" * 60)
+    print("🔧 Calculator MCP Server")
+    print("=" * 60)
+    print("\nAvailable tools:")
+    print("  • add(a, b) - Add two numbers")
+    print("  • subtract(a, b) - Subtract b from a")
+    print("  • multiply(a, b) - Multiply two numbers")
+    print("  • divide(a, b) - Divide a by b")
+    print("  • power(base, exponent) - Raise base to power")
+    print("  • square_root(number) - Calculate square root")
+    print("\nStarting server on stdio...")
+    print("=" * 60)
+    print("\n✅ Server running. Connect your client to use these tools.\n")
+    
+    # Run server using stdio transport
+    mcp.run(transport="stdio")
+</code></pre></div></div>
+<h5 id="step-3--create-app-with-mcp-client">Step 3 : Create app with mcp client</h5>
+
+<h5 id="step-31-import-modules">Step 3.1: Import modules</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import asyncio
+import sys
+from typing import Optional
+from contextlib import AsyncExitStack
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+from openai import OpenAI
+from dotenv import load_dotenv
+</code></pre></div></div>
+
+<h5 id="step-32-create-calculatomcpclient-class">Step 3.2: Create CalculatoMCPClient Class</h5>
+
+<h5 id="step-321-initiate-the-class">Step 3.2.1: Initiate the Class</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class CalculatorMCPClient:
+    """Client for the Calculator MCP Server using OpenAI GPT"""
+
+    def __init__(self):
+        self.session: Optional[ClientSession] = None
+        self.exit_stack = AsyncExitStack()
+        self.client = OpenAI()  # Uses OPENAI_API_KEY from env
+        self.tools = []
+        self.model = "gpt-4o-mini"  # Fast and capable for calculations
+</code></pre></div></div>
+
+<h5 id="step-322-create-a-connect_to_server-method">Step 3.2.2: Create a connect_to_server method</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    async def connect_to_server(self, server_script_path: str):
+        """
+        Connect to the MCP Calculator Server
+        
+        Args:
+            server_script_path: Path to calculator_server.py
+        """
+        try:
+            # Create server parameters for stdio connection
+            server_params = StdioServerParameters(
+                command="python",
+                args=[server_script_path]
+            )
+            
+            print(f"🔗 Connecting to MCP server: {server_script_path}")
+            
+            # Connect using stdio
+            read, write = await self.exit_stack.enter_async_context(
+                stdio_client(server_params)
+            )
+            
+            # Create and initialize session
+            self.session = await self.exit_stack.enter_async_context(
+                ClientSession(read, write)
+            )
+            await self.session.initialize()
+            
+            # Get available tools
+            tools_response = await self.session.list_tools()
+            self.tools = tools_response.tools
+            
+            print(f"✅ Connected successfully!")
+            print(f"📊 Available tools: {len(self.tools)}")
+            for tool in self.tools:
+                print(f"   • {tool.name}")
+            
+        except Exception as e:
+            print(f"❌ Error connecting to server: {e}")
+            raise
+</code></pre></div></div>
+
+<h5 id="step-323-create-an-internal-method-for-converting-mcp-tools-to-openai-function-calling-format">Step 3.2.3: Create an internal method for converting MCP tools to OpenAI function calling format</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    def _format_tools_for_openai(self) -&gt; list:
+        """Convert MCP tools to OpenAI function calling format"""
+        openai_tools = []
+        
+        for tool in self.tools:
+            openai_tool = {
+                "type": "function",
+                "function": {
+                    "name": tool.name,
+                    "description": tool.description,
+                    "parameters": tool.inputSchema
+                }
+            }
+            openai_tools.append(openai_tool)
+        
+        return openai_tools
+</code></pre></div></div>
+
+<h5 id="step-324-create-a-method-to-process-user-query-using-openai-gpt-and-calculator-tools">Step 3.2.4: Create a method to process user query using OpenAI GPT and calculator tools</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    async def calculate(self, user_query: str) -&gt; str:
+        """
+        Process a user's math query using OpenAI GPT and calculator tools
+        
+        Args:
+            user_query: The user's math question or request
+            
+        Returns:
+            GPT's response with the calculation result
+        """
+        if not self.session:
+            raise RuntimeError("Not connected to server. Call connect_to_server first.")
+        
+        # Prepare tools for OpenAI API
+        openai_tools = self._format_tools_for_openai()
+        
+        print(f"\n👤 You: {user_query}")
+        
+        # Initialize message history
+        messages = [{"role": "user", "content": user_query}]
+        
+        # Keep processing while GPT uses tools
+        iteration = 0
+        max_iterations = 10  # Prevent infinite loops
+        
+        while iteration &lt; max_iterations:
+            iteration += 1
+            
+            # Send message to OpenAI
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=messages,
+                tools=openai_tools if openai_tools else None,
+                temperature=0.7
+            )
+            
+            # Check if GPT wants to use a tool
+            tool_used = False
+            
+            # Process response choices
+            for choice in response.choices:
+                if choice.finish_reason == "tool_calls":
+                    tool_used = True
+                    
+                    # Add assistant's response to messages
+                    messages.append({
+                        "role": "assistant",
+                        "content": choice.message.content or "",
+                        "tool_calls": choice.message.tool_calls
+                    })
+                    
+                    # Process each tool call
+                    tool_results = []
+                    for tool_call in choice.message.tool_calls:
+                        tool_name = tool_call.function.name
+                        tool_input = eval(tool_call.function.arguments)  # Parse JSON string
+                        tool_use_id = tool_call.id
+                        
+                        print(f"   🔧 Using tool: {tool_name}")
+                        print(f"   📥 Input: {tool_input}")
+                        
+                        # Call the tool on the MCP server
+                        try:
+                            result = await self.session.call_tool(tool_name, tool_input)
+                            
+                            # Extract result text
+                            result_text = result.content[0].text if result.content else "No result"
+                            
+                            # Handle numeric results
+                            try:
+                                result_value = float(result_text)
+                                print(f"   📤 Result: {result_value}")
+                            except (ValueError, TypeError):
+                                print(f"   📤 Result: {result_text}")
+                            
+                            tool_results.append({
+                                "tool_call_id": tool_use_id,
+                                "result": result_text
+                            })
+                            
+                        except Exception as e:
+                            error_msg = f"Error: {str(e)}"
+                            print(f"   ❌ {error_msg}")
+                            tool_results.append({
+                                "tool_call_id": tool_use_id,
+                                "result": error_msg
+                            })
+                    
+                    # Add all tool results to messages
+                    for tool_result in tool_results:
+                        messages.append({
+                            "role": "tool",
+                            "tool_call_id": tool_result["tool_call_id"],
+                            "content": tool_result["result"]
+                        })
+                
+                elif choice.finish_reason == "stop":
+                    # GPT finished and didn't use tools
+                    final_response = choice.message.content or "No response"
+                    print(f"\n🤖 OpenAI: {final_response}")
+                    return final_response
+            
+            # If tool was used, continue the loop to get GPT's next response
+            if not tool_used:
+                break
+        
+        return "Max iterations reached"
+</code></pre></div></div>
+
+<h5 id="step-325-create-a-method-to-run-in-interactive-mode-for-a-user-to-ask-math-questions">Step 3.2.5: Create a method to run in interactive mode for a user to ask math questions</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    async def interactive_mode(self):
+        """
+        Run an interactive loop where a user can ask math questions
+        """
+        print("\n" + "=" * 60)
+        print("💬 Calculator Chat with OpenAI (Interactive Mode)")
+        print("=" * 60)
+        print("\nTry asking things like:")
+        print("  • What is 25 times 4?")
+        print("  • Calculate the square root of 144")
+        print("  • What's 100 divided by 4?")
+        print("  • What is 2 to the power of 10?")
+        print("\nType 'quit' or 'exit' to stop\n")
+        
+        while True:
+            try:
+                user_input = input("Enter a math question: ").strip()
+                
+                if user_input.lower() in ['quit', 'exit']:
+                    print("👋 Goodbye!")
+                    break
+                
+                if not user_input:
+                    continue
+                
+                await self.calculate(user_input)
+                
+            except KeyboardInterrupt:
+                print("\n👋 Goodbye!")
+                break
+            except Exception as e:
+                print(f"Error: {e}")
+
+    async def cleanup(self):
+        """Clean up resources"""
+        await self.exit_stack.aclose()
+</code></pre></div></div>
+
+<h5 id="step-33-define-main-method">Step 3.3: Define main method</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>async def main():
+    """Main entry point"""
+    
+    # Check if server path was provided
+    if len(sys.argv) &lt; 2:
+        print("Usage: python calculator_client_openai.py &lt;path_to_calculator_server.py&gt;")
+        print("\nExample:")
+        print("  python calculator_client_openai.py ./calculator_server.py")
+        print("\nMake sure calculator_server.py is running in a separate terminal:")
+        print("  python calculator_server.py")
+        print("\nAlso ensure OPENAI_API_KEY is set in .env or environment")
+        sys.exit(1)
+    
+    server_path = sys.argv[1]
+    client = CalculatorMCPClient()
+    
+    try:
+        print("=" * 60)
+        print("🧮 Calculator MCP App with OpenAI")
+        print("=" * 60)
+        print(f"Model: {client.model}")
+        
+        # Connect to server
+        await client.connect_to_server(server_path)
+        
+        # Run interactive mode
+        await client.interactive_mode()
+        
+    except Exception as e:
+        print(f"❌ Error: {e}")
+        import traceback
+        traceback.print_exc()
+    finally:
+        await client.cleanup()
+</code></pre></div></div>
+
+<h5 id="step-34-run-the-calculator-tool">Step 3.4: Run the Calculator Tool</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if __name__ == "__main__":
+    asyncio.run(main())
+</code></pre></div></div>
+
+<h2 id="calculator-app-with-mcp-server-in-action">Calculator App with MCP Server in Action</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% python Calculator_MCP_Client.py                           
+Usage: python calculator_client_openai.py &lt;path_to_calculator_server.py&gt;
+
+Example:
+  python calculator_client_openai.py ./calculator_server.py
+
+Make sure calculator_server.py is running in a separate terminal:
+  python calculator_server.py
+
+Also ensure OPENAI_API_KEY is set in the .env or environment
+
+% python Calculator_MCP_Client.py ./Calculator_MCP_Server.py
+============================================================
+🧮 Calculator MCP App with OpenAI
+============================================================
+Model: gpt-4o-mini
+🔗 Connecting to MCP server: ./Calculator_MCP_Server.py
+[06/04/26 23:49:31] INFO     Processing request of type ListToolsRequest                                                                                                 
+✅ Connected successfully!
+📊 Available tools: 6
+   • add
+   • subtract
+   • multiply
+   • divide
+   • power
+   • square_root
+
+============================================================
+💬 Calculator Chat with OpenAI (Interactive Mode)
+============================================================
+
+Try asking things like:
+  • What is 25 times 4?
+  • Calculate the square root of 144
+  • What's 100 divided by 4?
+  • Multiply 7 by 8, then add 15
+  • What is 2 to the power of 10?
+
+Type 'quit' or 'exit' to stop
+
+Enter a math question: what is 25/5?
+
+👤 You: what is 25/5?
+   🔧 Using tool: divide
+   📥 Input: {'a': 25, 'b': 5}
+[06/04/26 23:50:09] INFO     Processing request of type CallToolRequest                                                                                                       server.py:727
+   📤 Result: 5.0
+
+🤖 OpenAI: The result of \( 25 \div 5 \) is \( 5.0 \).
+Enter a math question: 
+</code></pre></div></div>
+
+<h2 id="brief-note-on-fastmcp">Brief note on FastMCP</h2>
+
+<p>FastMCP is a Python library that enables creation of MCP servers fast. It is simple and easy to get started.</p>
+
+<h5 id="getting-started">Getting Started</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pip install fastmcp
+</code></pre></div></div>
+
+<h5 id="simple-mcp-server">Simple MCP Server</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from fastmcp import FastMCP
+
+mcp = FastMCP("my-server")
+
+@mcp.tool()
+def add(a: int, b: int) -&gt; int: #type hints
+    """Add two numbers.""" #docstring 
+    return a + b
+
+if __name__ == "__main__":
+    mcp.run()
+</code></pre></div></div>
+
+<p>That’s it. Just save and run the above code, and you’ll have a functioning MCP server that can be integrated with your AI application.</p>
+
+<h2 id="mcp-security-guide-for-public-servers">MCP Security Guide for Public Servers</h2>
+<p>Discussing security of MCP servers in detail will require a separate post. In this section let us understand the precautions to be taken when using public MCP servers. First let us distinguish between Local and Public MCP Severs:  </p>
+
+<h4 id="public-mcp-servers">Public MCP Servers</h4>
+<ul>
+  <li>Hosted on the internet and accessible remotely</li>
+  <li>Can be developed by companies, individuals, or open-source communities</li>
+  <li>You access them via a public URL (e.g., https://mcp.example.com/sse)</li>
+  <li>Examples: Gmail MCP, Google Drive MCP, Asana MCP, etc.</li>
+  <li>May or may not require authentication (API keys, OAuth, etc.)</li>
+</ul>
+
+<h4 id="local-mcp-servers">Local MCP Servers</h4>
+<ul>
+  <li>Run on your local machine or internal network</li>
+  <li>You typically access them via localhost or an internal IP address</li>
+  <li>Useful for testing, development, or keeping sensitive tools private</li>
+  <li>Can be built using MCP SDKs and run in your environment</li>
+  <li>Examples: A custom MCP server you build for proprietary data, or a local instance of an open-source MCP server</li>
+</ul>
+
+<p>Generally, Official MCP servers like GitHub, Slack can be trusted, one can also trust Open-source MCP Servers with community reviews, have HTTPS+OAuth+Privacy policy and is actively maintained. It is best to avoid MCP servers with unknown authors, HTTP only, authenticate with raw API tokens and has no documentation or privacy policy.</p>
+
+<p>As a general thumb rule before connecting to ANY public MCP server ensure that:</p>
+<ul>
+  <li>It is from a trusted source</li>
+  <li>It is actively maintained</li>
+  <li>It has proper secure authorization (Like OAuth)</li>
+  <li>The remote URL should be HTTPS only</li>
+  <li>The access can be revoked easily</li>
+  <li>It has permission to access only what is needed</li>
+</ul>
+
+<h2 id="conclusion">Conclusion</h2>
+<p>In this post, MCP basics are explained with a very simple example. In terms of practical implementation there is more to be explored and understood especially security in MCP. In future posts regarding MCP we will explore with implemention the different MCP types - tools, resources and prompts, how to make it secure and in general about the precautions to be taken when using public MCP servers.</p>
+
+<h2 id="references">References</h2>
+<ul>
+  <li>https://www.anthropic.com/news/model-context-protocol</li>
+  <li>https://en.wikipedia.org/wiki/Model_Context_Protocol</li>
+  <li>https://newsletter.pragmaticengineer.com/p/mcp</li>
+</ul>
+
+<h4 id="appendix-a-brief-note-on-asyncio">Appendix A: Brief note on asyncio</h4>
+
+<p>Asyncio is a handy module which helps run tasks concurrently and not in parallel with the help of async and await syntax. The main building blocks of asyncio is:</p>
+<ul>
+  <li>Coroutines: A function that is defined as “async def”. The speciality of this function is that it is not executed immediately when called instead they return a coroutine object that can be paused and resumed.</li>
+  <li>Event Loop: This is the central piece of the building block acting as the “orchestrator” of the program. It registers all the tasks and is responsible to pause active task and execute next task whenever a task needs to wait for input and output(I/O)</li>
+  <li>Await Keyword: This keyword pauses the execution of a coroutine when the coroutine is waiting for I/O by yielding control back to the event loop, allowing other tasks to run until the awaited operation finishes.</li>
+  <li>Tasks: It is a wrapper used to schedule a coroutine on the event loop concurrently by using asyncio.create_task(<async def="" method="">) . They allow multiple coroutines to run at the same time</async></li>
+</ul>
+
+<h4 id="example-code">Example code</h4>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import asyncio
+
+async def fetch_score(subject_id, delay):
+    print(f"Task {subject_id}: Starting fetch...")
+    # Simulate a network request (non-blocking pause)
+    await asyncio.sleep(delay)  
+    print(f"Task {subject_id}: Data received!")
+    return f"Result {subject_id}"
+
+async def main():
+    # Schedule both tasks to run concurrently
+    task1 = asyncio.create_task(fetch_score(1, 2))
+    task2 = asyncio.create_task(fetch_score(2, 1))
+    
+    # Wait for both tasks to finish
+    await task1
+    await task2
+
+# Start the event loop and run the main entry point
+asyncio.run(main())
+</code></pre></div></div>
+<h3 id="comparing-asyncio-vs-threading-vs-multiprocessing">Comparing asyncio vs threading vs multiprocessing</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Dimension</th>
+      <th>asyncio</th>
+      <th>threading</th>
+      <th>multiprocessing</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Model</td>
+      <td>Cooperative concurrency</td>
+      <td>Preemptive concurrency</td>
+      <td>True parallelism</td>
+    </tr>
+    <tr>
+      <td>Execution</td>
+      <td>Single thread(event loop)</td>
+      <td>Multiple threads (one process)</td>
+      <td>Multiple processes</td>
+    </tr>
+    <tr>
+      <td>Memory</td>
+      <td>Shared</td>
+      <td>Shared</td>
+      <td>Separate</td>
+    </tr>
+    <tr>
+      <td>Switching</td>
+      <td>Use yield control(await)</td>
+      <td>OS decides/controls</td>
+      <td>OS decides/controls</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The above table gives you a mental map to understand and differentiate between asyncio, threading and multiprocessing. There is more to explore and learn and understand around the topic of threading and multiprocessing, but for now let’s understand when each can be used:
+Start with this question: Is the task I am handling CPU-bound? Like a task which is doing heavy mathematical computations or algorithmic calculations.
+If your answer is “Yes” then “multiprocessing” is the model to chose. Let’s say your answer is “No” and your task is I/O-bound (like disk-reads, network requests etc.,) then you are left with the choice of either “async” or “threading”. The choice here is simple, if your task can use async libraries then “asyncio” should be preferred in your code. In situations wherein your task is using synchronous/blocking/legacy libraries then you’ll have to choose “threading”.</p>
+
+
+  </div><nav class="post-nav"><a class="post-nav-item post-nav-prev" href="/technical/2026/02/18/fastapi.html">
+      <span class="post-nav-label">&larr; Previous</span>
+      <span class="post-nav-title">FastAPI Tutorial: Architecture, Core Concepts, and a CRUD API Example</span>
+    </a></nav><a class="u-url" href="/technical/2026/06/17/mcp.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper"><h2 class="footer-heading">Absorb a Concept</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Sathyendhra</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>This blog serves as a single point of reference for the concepts I have explored. The content is revised as and when I get a better understanding of it. I am hoping it helps the readers.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

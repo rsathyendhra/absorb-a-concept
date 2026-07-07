@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Kubernetes | Absorb a Concept</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Kubernetes" />
+<meta name="author" content="Sathyendhra" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Introduction “Kubernetes” – does this term ring a bell? Especially to all the technology enthusiasts out there you must have heard or come across this term, If your answer is yes and you understand everything around it, you may give this concept a skip. For the rest who have heard the term and know briefly about it, stick around and browse through the sections as a refresher and for people who have not heard of this term or are not well versed, worry not, this blog will give you much information to get you started and interested." />
+<meta property="og:description" content="Introduction “Kubernetes” – does this term ring a bell? Especially to all the technology enthusiasts out there you must have heard or come across this term, If your answer is yes and you understand everything around it, you may give this concept a skip. For the rest who have heard the term and know briefly about it, stick around and browse through the sections as a refresher and for people who have not heard of this term or are not well versed, worry not, this blog will give you much information to get you started and interested." />
+<link rel="canonical" href="http://localhost:4000/technical/2026/01/04/kubernetes.html" />
+<meta property="og:url" content="http://localhost:4000/technical/2026/01/04/kubernetes.html" />
+<meta property="og:site_name" content="Absorb a Concept" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2026-01-04T00:00:00+05:30" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Kubernetes" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sathyendhra"},"dateModified":"2026-01-04T00:00:00+05:30","datePublished":"2026-01-04T00:00:00+05:30","description":"Introduction “Kubernetes” – does this term ring a bell? Especially to all the technology enthusiasts out there you must have heard or come across this term, If your answer is yes and you understand everything around it, you may give this concept a skip. For the rest who have heard the term and know briefly about it, stick around and browse through the sections as a refresher and for people who have not heard of this term or are not well versed, worry not, this blog will give you much information to get you started and interested.","headline":"Kubernetes","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/technical/2026/01/04/kubernetes.html"},"url":"http://localhost:4000/technical/2026/01/04/kubernetes.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Absorb a Concept" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Absorb a Concept</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a><a class="page-link" href="/technical/">Technical</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Kubernetes</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2026-01-04T00:00:00+05:30" itemprop="datePublished">Jan 4, 2026
+      </time>
+      &middot; 5 min read
+</p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h2 id="introduction">Introduction</h2>
+<p>“Kubernetes” – does this term ring a bell? Especially to all the technology enthusiasts out there you must have heard or come across this term, If your answer is yes and you understand everything around it, you may give this concept a skip. For the rest who have heard the term and know briefly about it, stick around and browse through the sections as a refresher and for people who have not heard of this term or are not well versed, worry not, this blog will give you much information to get you started and interested.</p>
+
+<p>The content is divided into 4 parts,</p>
+
+<ul>
+  <li>History</li>
+  <li>What is Kubernetes?</li>
+  <li>Why Kubernetes?</li>
+  <li>How to get started with Kubernetes?</li>
+</ul>
+
+<h2 id="history">History</h2>
+<p>Before directly jumping into getting to knowing kubernetes, it is best to understand the evolution of deployments in the software industry. Software deployment is simply a way of running applications, traditionally they were run on physical servers. There were limitations in running application in physical servers which led to the inception of a concept called “Virtualization”.</p>
+
+<h3 id="what-are-the-limitationsdrawbacks-of-running-application-on-physical-servers">What are the limitations/drawbacks of running application on physical servers?</h3>
+<p>One major disadvantage is the lack of ability of sharing resources among different processes easily. Cost also plays an important role, a physical server is pricey to maintain(inclusive of real estate and infra for cooling). Scaling up is not easy and time consuming.</p>
+
+<h3 id="what-is-virtualization">What is virtualization?</h3>
+<p>In simple terms it is a software which allows to deploy(create) multiple machines using resources of an underlying physical hardware(host).</p>
+
+<p>Virtualization made software or app developments convenient but to further simplify software deployments the concept of container deployments came into existence.</p>
+
+<h3 id="what-is-container">What is container?</h3>
+<p>An application and its dependencies packaged into one portable unit which is also light weight is referred to as a container.</p>
+
+<p>he high rate of adoption of container deployments gave rise to widespread use of “kubernetes”. So simply put without containers, kubernetes would not exist.</p>
+
+<p>Now with the above concepts in mind, let us proceed to address the main topic i.e.,\</p>
+
+<h2 id="what-is-kubernetes">What is Kubernetes?</h2>
+<p>Kubernetes is an orchestrator which intelligently helps in managing multiple container applications spanning across many hosts.</p>
+
+<h2 id="why-kubernetes">Why Kubernetes?</h2>
+<p>The main purpose of container is optimum resource utilization, kubernetes with its intelligence and orchestration help to achieve this across multiple hosts, thereby helping to unlock the purpose and potential of containerized applications.</p>
+
+<h2 id="kubernetes-vs-docker">Kubernetes vs docker</h2>
+<p><img src="/assets/images/dockervskubernetes.png" alt="docker vs kubernetes" /></p>
+
+<p>Docker is a containerization platform which helps in building, implementing and running containerized applications limited to one docker instance per host os  whereas Kubernetes is much more, it is a platform for running and managing containers from many container runtimes and operates on a cluster level on many hosts. Docker is one of the many runtimes kubernetes supports.</p>
+
+<h2 id="how-to-get-started-with-kubernetes">How to get started with kubernetes?</h2>
+<h3 id="steps-for-mac">Steps for mac</h3>
+
+<p>Install kubectl</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/darwin/amd64/kubectl"
+</code></pre></div></div>
+
+<p>Check Installation</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/darwin/arm64/kubectl.sha256"
+echo "$(cat kubectl.sha256)  kubectl" | shasum -a 256 --check
+kubectl: OK
+</code></pre></div></div>
+
+<p>Make the kubectl binary executable.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>chmod +x ./kubectl
+</code></pre></div></div>
+
+<p>Move the kubectl binary to a file location on your system PATH.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo mv ./kubectl /usr/local/bin/kubectl 
+sudo chown root: /usr/local/bin/kubectl
+</code></pre></div></div>
+
+<p>Test to ensure the version you installed is up-to-date:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl version --client
+Client Version: v1.31.3
+Kustomize Version: v5.4.2
+</code></pre></div></div>
+
+<p>Verify kubectl configuration</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl cluster-info
+</code></pre></div></div>
+
+<p>Once the setup is complete, cluster-information can be got. Let us understand more about kubernetes cluster in the next section.</p>
+
+<h2 id="kubernetes-cluster">Kubernetes Cluster</h2>
+<p><img src="/assets/images/kube_cluster.png" alt="kube_cluster" /></p>
+
+<p>Kubernetes cluster is composed of two components,</p>
+<ul>
+  <li>kubernetes nodes</li>
+  <li>kubernetes control plane</li>
+</ul>
+
+<p>Kubernetes node comprises of:</p>
+<ul>
+  <li>kubelet - Responsible for running pods along with their containers using container runtime</li>
+  <li>kube-porxy - Optional component which is used to maintain networking rules on nodes to implement services.</li>
+  <li>container runtime -  container runtime software used by kubelet to run containers.</li>
+</ul>
+
+<p>Kubernete control plane consists of</p>
+<ul>
+  <li>kubeapi server - It is the core component that is responsible to expose http API’s of kubernetes.</li>
+  <li>control manager (including optional cloud control manager) - It is a controller to implement kubernetes API behavior</li>
+  <li>scheduler - Ensures that all pods are assigned to a suitable node</li>
+  <li>etcd - key value datastore for API server data which is conistent and highly avaialble</li>
+</ul>
+
+<p>In the next section let us understand about pod in kubernetes and how to create it,</p>
+
+<h2 id="what-is-a-pod-or-what-are-pods-in-kubernetes">What is a pod? or What are pods in kubernetes?</h2>
+<p>Pod is smallest deployable unit that can be created and managed by kubernetes. It can contain one or more containers. Generally it is one conatiner per pod but depending on the business use case it can accomodate more than one container.</p>
+
+<h3 id="how-to-deploy-a-sample-pod">How to deploy a sample pod?</h3>
+<p>Below is a sample yaml file that deploys a pod running nginx container with image nginx:1.14.2</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.14.2
+    ports:
+    - containerPort: 80
+</code></pre></div></div>
+<p>Save the above file as nginx.yaml and run the below command:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl apply -f nginx.yaml -n &lt;namespace_name&gt;
+</code></pre></div></div>
+<h3 id="lifecycle-of-a-pod">Lifecycle of a pod</h3>
+
+<p>Pods lifecycle starts with a “pending” phase, followed by “running” when at least one of the containers starts and then moves to “succeeded” if everything goes fine or to  a “failed” phase if one of the container terminated with failure.</p>
+
+<p>In real world, individual pods are generally not deployed, they get deployed using workload resources. Let us understand a little bit about workload resources in kubernetes.</p>
+
+<h3 id="pods-are-ephemeral">Pods are ephemeral</h3>
+<p>In kubernetes pods are ephemeral meaning that they can be terminated and redeployed by the nodes and are stateless. If a pod needs its identity and data to be non-ephemeral that can be achieved by making it persistent using statefulsets (a type of workload resource in kubernetes) which is briefly described in the next section.</p>
+
+<h2 id="workload-resources-supported-in-kubernetes">Workload resources supported in kubernetes</h2>
+<p>Workload resources can be described as API objects that manage and run applications/services on the cluster by ensuring the correct pods are running to match a specified desired state.</p>
+
+<p>Type of workloads supported by kubernetes</p>
+
+<p>1) Deployments - It manages a set of pods to run an application which does not maintain state
+2) StatefulSets - It runs a group of pods to run an application which maintains state. For e.g., application requires persistent storage or stable network identity
+3) DaemonSet - It ensures that all nodes have a copy of pod. For e.g., a copy of logs collection running on each node</p>
+
+<p>Other workload types are replicaset,job,cronjob and replicationController.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>In this post we have just scratched the surface in trying to understand the concept of kubernetes. With grasp of the above, one can embark on the journey of exploring  deeper into the world of kubernetes.</p>
+
+<h2 id="references">References</h2>
+<ul>
+  <li>https://kubernetes.io/docs/tutorials/kubernetes-basics/</li>
+  <li>https://portworx.com/blog/kubernetes-vs-virtual-machines/</li>
+  <li>https://www.atlassian.com/microservices/microservices-architecture/kubernetes-vs-docker#:~:text=Kubernetes%20can%20be%20used%20with,containers%20a%20week%20at%20scale.</li>
+  <li>https://www.index.dev/blog/kubernetes-vs-docker</li>
+</ul>
+
+  </div><nav class="post-nav"><a class="post-nav-item post-nav-next" href="/technical/2026/01/07/rest.html">
+      <span class="post-nav-label">Next &rarr;</span>
+      <span class="post-nav-title">Understanding REST</span>
+    </a></nav><a class="u-url" href="/technical/2026/01/04/kubernetes.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper"><h2 class="footer-heading">Absorb a Concept</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Sathyendhra</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>This blog serves as a single point of reference for the concepts I have explored. The content is revised as and when I get a better understanding of it. I am hoping it helps the readers.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

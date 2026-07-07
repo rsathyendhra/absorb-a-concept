@@ -1,0 +1,15 @@
+{%- if site.buttondown_username -%}
+<div class="subscribe-box">
+  <h3 class="subscribe-heading">Subscribe via email</h3>
+  <p class="subscribe-blurb">Get new posts delivered to your inbox. No spam, unsubscribe anytime.</p>
+  <form
+    action="https://buttondown.com/api/emails/embed-subscribe/{{ site.buttondown_username }}"
+    method="post"
+    target="_blank"
+    class="subscribe-form"
+  >
+    <input type="email" name="email" placeholder="you@example.com" required class="subscribe-input" aria-label="Email address">
+    <input type="submit" value="Subscribe" class="subscribe-button">
+  </form>
+</div>
+{%- endif -%}
